@@ -38,17 +38,17 @@ CBUFFER_END
 // CUSTOM_LINE_BEGIN
 // ----------------------------------------------------------------
 UNITY_INSTANCING_BUFFER_START(Props)
-  UNITY_DEFINE_INSTANCED_PROP(half4, _CustomColor)
-  UNITY_DEFINE_INSTANCED_PROP(float, _VertexCount)
-  UNITY_DEFINE_INSTANCED_PROP(float, _AnimationSpeed)
-  UNITY_DEFINE_INSTANCED_PROP(float, _BakedTextureWidth)
-  UNITY_DEFINE_INSTANCED_PROP(float, _BakedTextureHeight)
-  UNITY_DEFINE_INSTANCED_PROP(float, _BakedAnimationFPS)
-  UNITY_DEFINE_INSTANCED_PROP(float, _BakedAnimationTotalDuration)
-  UNITY_DEFINE_INSTANCED_PROP(float, _BakedAnimationTotalFrames)
-  UNITY_DEFINE_INSTANCED_PROP(float, _BakedCurrentAnimationInitialFrame)
-  UNITY_DEFINE_INSTANCED_PROP(float, _BakedCurrentAnimationFrames)
-  UNITY_DEFINE_INSTANCED_PROP(float, _BakedAnimationTimeOffset)
+    UNITY_DEFINE_INSTANCED_PROP(half4, _CustomColor)
+    UNITY_DEFINE_INSTANCED_PROP(float, _VertexCount)
+    UNITY_DEFINE_INSTANCED_PROP(float, _AnimationSpeed)
+    UNITY_DEFINE_INSTANCED_PROP(float, _BakedTextureWidth)
+    UNITY_DEFINE_INSTANCED_PROP(float, _BakedTextureHeight)
+    UNITY_DEFINE_INSTANCED_PROP(float, _BakedAnimationFPS)
+    UNITY_DEFINE_INSTANCED_PROP(float, _BakedAnimationTotalDuration)
+    UNITY_DEFINE_INSTANCED_PROP(float, _BakedAnimationTotalFrames)
+    UNITY_DEFINE_INSTANCED_PROP(float, _BakedCurrentAnimationInitialFrame)
+    UNITY_DEFINE_INSTANCED_PROP(float, _BakedCurrentAnimationFrames)
+    UNITY_DEFINE_INSTANCED_PROP(float, _BakedAnimationTimeOffset)
 UNITY_INSTANCING_BUFFER_END(Props)
 
 // ----------------------------------------------------------------
