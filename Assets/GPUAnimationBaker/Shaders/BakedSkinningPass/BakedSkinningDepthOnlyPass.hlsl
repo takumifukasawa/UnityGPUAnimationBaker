@@ -3,10 +3,20 @@
 
 // ---------------------------------------------------------------------------------
 // ref:
-// https://github.com/Unity-Technologies/Graphics/blob/10.8.1/release/com.unity.render-pipelines.universal/Shaders/DepthOnlyPass.hlsl
+// Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/Shaders/DepthOnlyPass.hlsl
 // ---------------------------------------------------------------------------------
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+// ------------------------------------------------------------
+// CUSTOM_LINE_BEGIN
+// ------------------------------------------------------------
+ 
+#include "BakedSkinningCommon.hlsl"
+
+// ------------------------------------------------------------
+// CUSTOM_LINE_END
+// ------------------------------------------------------------
 
 struct Attributes
 {
@@ -18,7 +28,7 @@ struct Attributes
     float2 texcoord2     : TEXCOORD1;
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
-    // ----------------------------------------------------------------
+    // ----------------------------------------------------------------   
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -36,21 +46,22 @@ Varyings DepthOnlyVertex(Attributes input)
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
+
     // ----------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
-
-    // default
+ 
+    // ORIGINAL
     // output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     // output.positionCS = TransformObjectToHClip(input.position.xyz);
-
+ 
     BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.texcoord2);
     float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput);
-
-    BakedSkinningAnimationInfo bakedSkinningAnimationInfo = GetBakedSkinningAnimationInfo(input.texcoord2);
+ 
+    // BakedSkinningAnimationInfo bakedSkinningAnimationInfo = GetBakedSkinningAnimationInfo(input.texcoord2);
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     output.positionCS = TransformObjectToHClip(bakedSkinningPositionOS);
-
+ 
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
     // ----------------------------------------------------------------

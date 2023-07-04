@@ -1,0 +1,9 @@
+{
+  "FormattingOptions": {
+    "organizeImports": false,
+    "editor.insertSpaces": true,
+    "UseTabs": false,
+    "TabSize": 4,
+    "IndentationSize": 4
+  }
+}

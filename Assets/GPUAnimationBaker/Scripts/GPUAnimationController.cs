@@ -7,13 +7,14 @@ namespace GPUAnimationBaker
     [RequireComponent(typeof(MeshRenderer))]
     public class GPUAnimationController : MonoBehaviour
     {
+        [SerializeField]
+        private MeshRenderer _meshRenderer;
+
         [ReadOnly, SerializeField]
         private GPUAnimationDataScriptableObject _gpuAnimationDataScriptableObject;
 
         [SerializeField, HideInInspector]
         private int _currentGPUAnimationFrameIndex = 0;
-
-        private MeshRenderer _meshRenderer;
 
         private MaterialPropertyBlock _materialPropertyBlock;
 
@@ -33,11 +34,13 @@ namespace GPUAnimationBaker
                 {
                     return new string[] { };
                 }
+
                 List<string> acc = new List<string>();
                 for (int i = 0; i < _gpuAnimationDataScriptableObject.GPUAnimationFrames.Count; i++)
                 {
                     acc.Add(_gpuAnimationDataScriptableObject.GPUAnimationFrames[i].AnimationName);
                 }
+
                 return acc.ToArray();
             }
         }
@@ -46,7 +49,6 @@ namespace GPUAnimationBaker
 
         void Awake()
         {
-            _meshRenderer = GetComponent<MeshRenderer>();
             _materialPropertyBlock = new MaterialPropertyBlock();
 
             if (_gpuAnimationDataScriptableObject == null)
@@ -65,6 +67,8 @@ namespace GPUAnimationBaker
             //     _gpuAnimationDataScriptableObject.TextureWidth,
             //     _gpuAnimationDataScriptableObject.TextureHeight
             // ));
+           
+            SetColor(Color.white);
         }
 
         void UpdateFrameInfo(GPUAnimationFrame frameInfo)
@@ -80,7 +84,6 @@ namespace GPUAnimationBaker
                 // TODO: -1 の必要ある？
                 // _currentGPUAnimationInitialFrame -= 1;
             }
-
         }
 
         public void PlayAnimation(string name)
@@ -95,6 +98,7 @@ namespace GPUAnimationBaker
                 ));
                 return;
             }
+
             UpdateFrameInfo(targetFrame);
         }
 
@@ -110,6 +114,7 @@ namespace GPUAnimationBaker
                 ));
                 return;
             }
+
             UpdateFrameInfo(targetFrame);
         }
 
@@ -153,6 +158,18 @@ namespace GPUAnimationBaker
         public void SetAnimationData(GPUAnimationDataScriptableObject data)
         {
             _gpuAnimationDataScriptableObject = data;
+        }
+
+        public void SetColor(Color color)
+        {
+            if (_materialPropertyBlock == null)
+            {
+                _materialPropertyBlock = new MaterialPropertyBlock();
+            }
+
+            _meshRenderer.GetPropertyBlock(_materialPropertyBlock);
+            _materialPropertyBlock.SetColor("_CustomColor", color);
+            _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
         }
     }
 }

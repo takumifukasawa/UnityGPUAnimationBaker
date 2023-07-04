@@ -3,7 +3,7 @@
 
 // ---------------------------------------------------------------------------------
 // ref:
-// https://github.com/Unity-Technologies/Graphics/blob/10.8.1/com.unity.render-pipelines.universal/Shaders/SimpleLitInput.hlsl
+// Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/Shaders/SimpleLitInput.hlsl
 // 
 // cbufferの上書きができないので、SimpleLitInputをコピペしている
 // ---------------------------------------------------------------------------------
