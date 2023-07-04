@@ -24,7 +24,7 @@ CBUFFER_START(UnityPerMaterial)
     sampler2D _BakedPositionMap;
     sampler2D _BakedNormalMap;
 
-        // NOTE: 一旦tangent消してみる
+    // NOTE: 一旦tangent消してみる
     // sampler2D _BakedTangentMap;
 
     // float _BakedVertexRange;
