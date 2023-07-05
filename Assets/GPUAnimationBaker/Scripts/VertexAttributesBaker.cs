@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using System.Runtime.InteropServices;
 
@@ -16,30 +17,9 @@ namespace GPUAnimationBaker
     /// </summary>
     public class VertexAttributesBaker
     {
-        private struct VertexAttributes
-        {
-            public Vector3 Position;
-            public Vector3 Normal;
-            public Vector3 Tangent;
-        }
-
-        private RenderTexture _bakedPositionRenderTexture;
-        private RenderTexture _bakedNormalRenderTexture;
-        private RenderTexture _bakedTangentRenderTexture;
-
-        private Texture2D _bakedPositionMap;
-        private Texture2D _bakedNormalMap;
-        private Texture2D _bakedTangentMap;
-
-        private List<VertexAttributes> _vertexAttributesList;
-
-        private List<GPUAnimationFrame> _gpuAnimationFrames;
-
-        private Mesh _runtimeMesh;
-
-        private SkinnedMeshRenderer _skinnedMeshRenderer;
-
-        private Mesh _memoryMesh;
+        // ----------------------------------------------------------------------------------
+        // public
+        // ----------------------------------------------------------------------------------
 
         /// <summary>
         /// 
@@ -65,25 +45,6 @@ namespace GPUAnimationBaker
             _memoryMesh = new Mesh();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <returns></returns>
-        RenderTexture CreateRenderTexture(int width, int height)
-        {
-            RenderTexture rt = new RenderTexture(width, height, 0, RenderTextureFormat.ARGBHalf);
-            rt.enableRandomWrite = true;
-            rt.Create();
-
-            RenderTexture tmp = RenderTexture.active;
-            RenderTexture.active = rt;
-            GL.Clear(true, true, Color.clear);
-            RenderTexture.active = tmp;
-
-            return rt;
-        }
 
         /// <summary>
         /// 
@@ -204,9 +165,6 @@ namespace GPUAnimationBaker
             );
         }
 
-        // ----------------------------------------------------------------------------------
-        // public
-        // ----------------------------------------------------------------------------------
 
         public void SaveAssets(string name, Shader runtimeShader, float fps, float totalDuration, float totalFrames)
         {
@@ -270,15 +228,17 @@ namespace GPUAnimationBaker
 
             // ----
 
-            GPUAnimationDataScriptableObject gpuAnimationData = ScriptableObject.CreateInstance<GPUAnimationDataScriptableObject>();
-            gpuAnimationData.FPS = fps;
-            gpuAnimationData.TotalDuration = totalDuration;
-            gpuAnimationData.TotalFrames = totalFrames;
-            gpuAnimationData.GPUAnimationFrames = _gpuAnimationFrames;
-            // 全部サイズ一緒なのでrendertextureから引っ張ってきちゃう
-            gpuAnimationData.TextureWidth = _bakedPositionRenderTexture.width;
-            gpuAnimationData.TextureHeight = _bakedPositionRenderTexture.height;
-            gpuAnimationData.VertexCount = _skinnedMeshRenderer.sharedMesh.vertexCount;
+            GPUAnimationDataScriptableObject gpuAnimationData = GPUAnimationDataScriptableObject.Create(
+                fps,
+                totalDuration,
+                totalFrames,
+                _bakedPositionRenderTexture.width,
+                _bakedPositionRenderTexture.height,
+                _skinnedMeshRenderer.sharedMesh.vertexCount,
+                _gpuAnimationFrames,
+                GetBoneOffsetMatrices(_skinnedMeshRenderer).ToList()
+            );
+            Debug.Log($"hogehoge count: {GetBoneOffsetMatrices(_skinnedMeshRenderer).ToList()}");
 
             AssetDatabase.CreateAsset(
                 gpuAnimationData,
@@ -329,6 +289,51 @@ namespace GPUAnimationBaker
         // ----------------------------------------------------------------------------------
         // private
         // ----------------------------------------------------------------------------------
+
+        private struct VertexAttributes
+        {
+            public Vector3 Position;
+            public Vector3 Normal;
+            public Vector3 Tangent;
+        }
+
+        private RenderTexture _bakedPositionRenderTexture;
+        private RenderTexture _bakedNormalRenderTexture;
+        private RenderTexture _bakedTangentRenderTexture;
+
+        private Texture2D _bakedPositionMap;
+        private Texture2D _bakedNormalMap;
+        private Texture2D _bakedTangentMap;
+
+        private List<VertexAttributes> _vertexAttributesList;
+
+        private List<GPUAnimationFrame> _gpuAnimationFrames;
+
+        private Mesh _runtimeMesh;
+
+        private SkinnedMeshRenderer _skinnedMeshRenderer;
+
+        private Mesh _memoryMesh;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        RenderTexture CreateRenderTexture(int width, int height)
+        {
+            RenderTexture rt = new RenderTexture(width, height, 0, RenderTextureFormat.ARGBHalf);
+            rt.enableRandomWrite = true;
+            rt.Create();
+
+            RenderTexture tmp = RenderTexture.active;
+            RenderTexture.active = rt;
+            GL.Clear(true, true, Color.clear);
+            RenderTexture.active = tmp;
+
+            return rt;
+        }
 
         /// <summary>
         /// 全てのボーンにおける、ボーンごとの初期姿勢行列の逆行列
@@ -533,7 +538,39 @@ namespace GPUAnimationBaker
             mesh.vertices = sourceMesh.vertices;
             mesh.uv = sourceMesh.uv;
 
+            int animationFramesUVChannel = 1;
+            int boneWeightsUVChannel = 2;
+
+            // create uv
+            List<Vector2> refUV = new List<Vector2>();
+            for (int i = 0; i < sourceMesh.vertexCount; i++)
+            {
+                // refUV.Add(new Vector2(i + 0.5f, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
+                // refUV.Add(new Vector2(i, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
+                refUV.Add(new Vector2(i, 0));
+            }
+
+
+            // create vertex bone weights
             var verticesBoneWeights = GetVerticesBoneWeights(sourceMesh);
+            List<Vector4> packedVerticesBoneWeights = new List<Vector4>();
+            for (int vertexIndex = 0; vertexIndex < verticesBoneWeights.Count; vertexIndex++)
+            {
+                var packedBoneWeight = new Vector4();
+                // 一旦影響するボーンは2つまで
+                // TODO: 4つまで影響させたい
+                // index: 0
+                packedBoneWeight.x = verticesBoneWeights[vertexIndex][0].boneIndex;
+                packedBoneWeight.y = verticesBoneWeights[vertexIndex][0].weight;
+                // index: 1
+                if (verticesBoneWeights[vertexIndex].Count >= 2)
+                {
+                    packedBoneWeight.z = verticesBoneWeights[vertexIndex][1].boneIndex;
+                    packedBoneWeight.w = verticesBoneWeights[vertexIndex][1].weight;
+                }
+
+                packedVerticesBoneWeights.Add(packedBoneWeight);
+            }
 
             // for debug
             // Debug.Log("==========================");
@@ -545,27 +582,16 @@ namespace GPUAnimationBaker
             // }
             // Debug.Log("==========================");
 
-            int animationFramesUVChannel = 1;
-
-            List<Vector2> refUV = new List<Vector2>();
-            for (int i = 0; i < sourceMesh.vertexCount; i++)
-            {
-                // refUV.Add(new Vector2(i + 0.5f, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
-                // refUV.Add(new Vector2(i, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
-                refUV.Add(new Vector2(i, 0));
-            }
-
             // default
             // mesh.SetUVs(uvChannel, refUV);
-
             mesh.SetUVs(animationFramesUVChannel, refUV);
+
+            mesh.SetUVs(boneWeightsUVChannel, packedVerticesBoneWeights);
 
             mesh.normals = sourceMesh.normals;
             mesh.tangents = sourceMesh.tangents;
             mesh.triangles = sourceMesh.triangles;
 
-            Debug.Log($"sss: {sourceMesh.bindposes}");
-            Debug.Log($"sss: {sourceMesh.bindposes.Length}");
             mesh.bindposes = sourceMesh.bindposes;
 
             return mesh;

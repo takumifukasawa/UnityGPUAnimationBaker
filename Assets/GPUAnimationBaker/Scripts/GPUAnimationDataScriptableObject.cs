@@ -5,7 +5,6 @@ using UnityEngine;
 namespace GPUAnimationBaker
 {
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/GPUAnimationData")]
-
     public class GPUAnimationDataScriptableObject : ScriptableObject
     {
         public float FPS;
@@ -15,5 +14,31 @@ namespace GPUAnimationBaker
         public int TextureHeight;
         public int VertexCount;
         public List<GPUAnimationFrame> GPUAnimationFrames = new List<GPUAnimationFrame>();
+        public List<Matrix4x4> BoneOffsetMatrices;
+
+        public static GPUAnimationDataScriptableObject Create(
+            float fps,
+            float totalDuration,
+            float totalFrames,
+            int textureWidth,
+            int textureHeight,
+            int vertexCount,
+            List<GPUAnimationFrame> gpuAnimationFrames,
+            List<Matrix4x4> boneOffsetMatrices
+        )
+        {
+            var gpuAnimationDataScriptableObject = ScriptableObject.CreateInstance<GPUAnimationDataScriptableObject>();
+
+            gpuAnimationDataScriptableObject.FPS = fps;
+            gpuAnimationDataScriptableObject.TotalDuration = totalDuration;
+            gpuAnimationDataScriptableObject.TotalFrames = totalFrames;
+            gpuAnimationDataScriptableObject.TextureWidth = textureWidth;
+            gpuAnimationDataScriptableObject.TextureHeight = textureHeight;
+            gpuAnimationDataScriptableObject.VertexCount = vertexCount;
+            gpuAnimationDataScriptableObject.GPUAnimationFrames = gpuAnimationFrames;
+            gpuAnimationDataScriptableObject.BoneOffsetMatrices = boneOffsetMatrices;
+
+            return gpuAnimationDataScriptableObject;
+        }
     }
 }
