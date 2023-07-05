@@ -139,17 +139,8 @@ namespace GPUAnimationBaker
             _bakedNormalRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
             _bakedTangentRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
 
-            var verticesBoneWeights = GetVerticesBoneWeights();
-            Debug.Log("==========================");
-            Debug.Log(verticesBoneWeights.Count);
-            for (int i = 0; i < verticesBoneWeights.Count; i++)
-            {
-                var vertexBoneWeight = verticesBoneWeights[i];
-                Debug.Log($"index: {i}, bone weight num: {vertexBoneWeight.Count}");
-            }
 
-            Debug.Log("==========================");
-
+            // for debug
             // for (int i = 0; i < textureSize.x * textureSize.y - pixels; i++)
             // {
             //     _vertexAttributesList.Add(new VertexAttributes()
@@ -205,7 +196,12 @@ namespace GPUAnimationBaker
             // Graphics.CopyTexture(_bakedNormalRenderTexture, _bakedNormalMap);
             // Graphics.CopyTexture(_bakedTangentRenderTexture, _bakedTangentMap);
 
-            _runtimeMesh = CreateMeshForGPUAnimation(_skinnedMeshRenderer.sharedMesh, uvChannel);
+
+            _runtimeMesh = CreateMeshForGPUAnimation(
+                _skinnedMeshRenderer.sharedMesh,
+                // verticesBoneWeights,
+                uvChannel
+            );
         }
 
         // ----------------------------------------------------------------------------------
@@ -393,7 +389,7 @@ namespace GPUAnimationBaker
         /// <param name="vertexIndex"></param>
         /// <returns></returns>
         // List<BoneWeight1> GetVertexBoneWeight(int vertexIndex)
-        List<List<BoneWeight1>> GetVerticesBoneWeights()
+        static List<List<BoneWeight1>> GetVerticesBoneWeights(Mesh sourceMesh)
         {
             // int vertexCount = _skinnedMeshRenderer.sharedMesh.vertexCount;
             // var boneWeights = _skinnedMeshRenderer.sharedMesh.GetAllBoneWeights();
@@ -416,17 +412,16 @@ namespace GPUAnimationBaker
 
             var verticesBoneWeights = new List<List<BoneWeight1>>();
 
-            int vertexCount = _skinnedMeshRenderer.sharedMesh.vertexCount;
-            var boneWeights = _skinnedMeshRenderer.sharedMesh.GetAllBoneWeights();
-            var bonesPerVertex = _skinnedMeshRenderer.sharedMesh.GetBonesPerVertex();
+            int vertexCount = sourceMesh.vertexCount;
+            var boneWeights = sourceMesh.GetAllBoneWeights();
+            var bonesPerVertex = sourceMesh.GetBonesPerVertex();
 
-            Debug.Log("-------------------");
-            Debug.Log(_skinnedMeshRenderer.bones);
-            Debug.Log($"bone count: {_skinnedMeshRenderer.bones.Length}");
-            Debug.Log(_skinnedMeshRenderer.sharedMesh.bindposes);
-            Debug.Log($"bind pose count: {_skinnedMeshRenderer.sharedMesh.bindposes.Length}");
-
-            var bones = _skinnedMeshRenderer.bones;
+            // Debug.Log("-------------------");
+            // Debug.Log(_skinnedMeshRenderer.bones);
+            // Debug.Log($"bone count: {_skinnedMeshRenderer.bones.Length}");
+            // Debug.Log(_skinnedMeshRenderer.sharedMesh.bindposes);
+            // Debug.Log($"bind pose count: {_skinnedMeshRenderer.sharedMesh.bindposes.Length}");
+            // var bones = _skinnedMeshRenderer.bones;
 
             var boneWeightIndex = 0;
             for (var vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
@@ -529,11 +524,26 @@ namespace GPUAnimationBaker
         /// <param name="sourceMesh"></param>
         /// <param name="uvChannel"></param>
         /// <returns></returns>
-        private static Mesh CreateMeshForGPUAnimation(Mesh sourceMesh, int uvChannel = 1)
+        private static Mesh CreateMeshForGPUAnimation(
+            Mesh sourceMesh,
+            int uvChannel = 1
+        )
         {
             Mesh mesh = new Mesh();
             mesh.vertices = sourceMesh.vertices;
             mesh.uv = sourceMesh.uv;
+
+            var verticesBoneWeights = GetVerticesBoneWeights(sourceMesh);
+
+            // for debug
+            // Debug.Log("==========================");
+            // Debug.Log(verticesBoneWeights.Count);
+            // for (int i = 0; i < verticesBoneWeights.Count; i++)
+            // {
+            //     var vertexBoneWeight = verticesBoneWeights[i];
+            //     Debug.Log($"index: {i}, bone weight num: {vertexBoneWeight.Count}");
+            // }
+            // Debug.Log("==========================");
 
             int animationFramesUVChannel = 1;
 
