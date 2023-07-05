@@ -20,10 +20,10 @@ void CSMain(uint2 id : SV_DispatchThreadID)
     int dataIndex = id.y * TextureWidth + id.x;
     BoneAttributes OutputData = InputData[dataIndex];
 
-    float2 uv0 = float2(id.x + 0, id.y);
-    float2 uv1 = float2(id.x + 1, id.y);
-    float2 uv2 = float2(id.x + 2, id.y);
-    float2 uv3 = float2(id.x + 3, id.y);
+    float2 uv0 = float2(id.x * 4 + 0, id.y);
+    float2 uv1 = float2(id.x * 4 + 1, id.y);
+    float2 uv2 = float2(id.x * 4 + 2, id.y);
+    float2 uv3 = float2(id.x * 4 + 3, id.y);
 
     OutBones[uv0] = OutputData.bone[0];
     OutBones[uv1] = OutputData.bone[1];

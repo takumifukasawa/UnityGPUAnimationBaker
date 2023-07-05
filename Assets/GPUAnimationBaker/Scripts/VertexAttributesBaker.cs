@@ -111,6 +111,9 @@ namespace GPUAnimationBaker
 
             int textureWidth = textureSize.x;
             int textureHeight = textureSize.y;
+            // overrides
+            // textureWidth = 4 * 2;
+            // textureHeight = 1;
 
             // tmp
             // _bakedPositionRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
@@ -156,11 +159,17 @@ namespace GPUAnimationBaker
             bakerComputeShader.SetBuffer(kernel, "InputData", graphicsBuffer);
             bakerComputeShader.SetTexture(kernel, "OutBones", _bakedBonesRenderTexture);
 
+            // tmp
+            // bakerComputeShader.Dispatch(
+            //     kernel,
+            //     textureWidth,
+            //     textureHeight,
+            //     1
+            // );
             bakerComputeShader.Dispatch(
                 kernel,
-                textureWidth,
-                // (int)Mathf.Floor((float)pixels / (float)textureSize.x),
-                textureHeight,
+                textureWidth / 4, // w
+                textureHeight, // h
                 1
             );
 
