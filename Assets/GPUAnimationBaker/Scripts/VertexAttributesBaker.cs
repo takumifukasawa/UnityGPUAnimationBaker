@@ -238,7 +238,6 @@ namespace GPUAnimationBaker
                 _gpuAnimationFrames,
                 GetBoneOffsetMatrices(_skinnedMeshRenderer).ToList()
             );
-            Debug.Log($"hogehoge count: {GetBoneOffsetMatrices(_skinnedMeshRenderer).ToList()}");
 
             AssetDatabase.CreateAsset(
                 gpuAnimationData,
