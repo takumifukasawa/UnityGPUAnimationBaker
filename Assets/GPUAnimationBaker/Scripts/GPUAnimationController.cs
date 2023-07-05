@@ -7,6 +7,10 @@ namespace GPUAnimationBaker
     [RequireComponent(typeof(MeshRenderer))]
     public class GPUAnimationController : MonoBehaviour
     {
+        // ----------------------------------------------------------------------------------
+        // serialize
+        // ----------------------------------------------------------------------------------
+
         [SerializeField]
         private MeshRenderer _meshRenderer;
 
@@ -16,43 +20,10 @@ namespace GPUAnimationBaker
         [SerializeField, HideInInspector]
         private int _currentGPUAnimationFrameIndex = 0;
 
-        // private MaterialPropertyBlock _materialPropertyBlock;
-        private Material _materialInstance;
+        // ----------------------------------------------------------------------------------
+        // life cycle
+        // ----------------------------------------------------------------------------------
 
-        private GPUAnimationFrame _currentGPUAnimationFrameInfo;
-
-        private int _currentGPUAnimationInitialFrame;
-
-        private float _animationSpeed = 1;
-
-        private float _animationOffset = 0;
-
-        public string[] AnimationNames
-        {
-            get
-            {
-                if (_gpuAnimationDataScriptableObject == null)
-                {
-                    return new string[] { };
-                }
-
-                List<string> acc = new List<string>();
-                for (int i = 0; i < _gpuAnimationDataScriptableObject.GPUAnimationFrames.Count; i++)
-                {
-                    acc.Add(_gpuAnimationDataScriptableObject.GPUAnimationFrames[i].AnimationName);
-                }
-
-                return acc.ToArray();
-            }
-        }
-
-        private bool _isRuntime = true;
-
-        // public void Setup()
-        // {
-        //     _meshRenderer = GetComponent<MeshRenderer>();
-        // }
-       
         // TODO: bakerでaddcomponentした時も呼ばれるのでうまいこと回避したい
         void Awake()
         {
@@ -62,6 +33,7 @@ namespace GPUAnimationBaker
             {
                 _meshRenderer = GetComponent<MeshRenderer>();
             }
+            
             _materialInstance = _meshRenderer.material;
 
             if (_gpuAnimationDataScriptableObject == null)
@@ -85,68 +57,9 @@ namespace GPUAnimationBaker
             // SetColor(Color.white);
         }
 
-        void UpdateFrameInfo(GPUAnimationFrame frameInfo)
-        {
-            _currentGPUAnimationFrameInfo = frameInfo;
-            _currentGPUAnimationInitialFrame = 0;
-            if (_currentGPUAnimationFrameIndex != 0)
-            {
-                for (int i = 0; i < _currentGPUAnimationFrameIndex; i++)
-                {
-                    _currentGPUAnimationInitialFrame += _gpuAnimationDataScriptableObject.GPUAnimationFrames[i].Frames;
-                }
-                // TODO: -1 の必要ある？
-                // _currentGPUAnimationInitialFrame -= 1;
-            }
-        }
-
-        public void PlayAnimation(string name)
-        {
-            GPUAnimationFrame targetFrame = _gpuAnimationDataScriptableObject.GPUAnimationFrames.Find(elem => name == elem.AnimationName);
-            if (targetFrame == null)
-            {
-                Debug.LogError(string.Format(
-                    "[GPUAnimationController] animation is not found - obj name: {0}, animation name: {1}",
-                    gameObject.name,
-                    name
-                ));
-                return;
-            }
-
-            UpdateFrameInfo(targetFrame);
-        }
-
-        public void PlayAnimation(int index)
-        {
-            GPUAnimationFrame targetFrame = _gpuAnimationDataScriptableObject.GPUAnimationFrames[index];
-            if (targetFrame == null)
-            {
-                Debug.LogError(string.Format(
-                    "[GPUAnimationController] animation is not found - obj name: {0}, animation name: {1}",
-                    gameObject.name,
-                    name
-                ));
-                return;
-            }
-
-            UpdateFrameInfo(targetFrame);
-        }
-
-        public void SetAnimationSpeed(float speed)
-        {
-            _animationSpeed = speed;
-        }
-
-        public void SetAnimationOffset(float offset)
-        {
-            _animationOffset = offset;
-        }
-
-        public void SetIsRuntime(bool flag)
-        {
-            _isRuntime = flag;
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
         void FixedUpdate()
         {
             if (!_isRuntime || _gpuAnimationDataScriptableObject == null)
@@ -181,11 +94,118 @@ namespace GPUAnimationBaker
             // Debug.Log(_gpuAnimationDataScriptableObject.TotalDuration);
         }
 
+        // ----------------------------------------------------------------------------------
+        // public
+        // ----------------------------------------------------------------------------------
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string[] AnimationNames
+        {
+            get
+            {
+                if (_gpuAnimationDataScriptableObject == null)
+                {
+                    return new string[] { };
+                }
+
+                List<string> acc = new List<string>();
+                for (int i = 0; i < _gpuAnimationDataScriptableObject.GPUAnimationFrames.Count; i++)
+                {
+                    acc.Add(_gpuAnimationDataScriptableObject.GPUAnimationFrames[i].AnimationName);
+                }
+
+                return acc.ToArray();
+            }
+        }
+
+        // public void Setup()
+        // {
+        //     _meshRenderer = GetComponent<MeshRenderer>();
+        // }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        public void PlayAnimation(string name)
+        {
+            GPUAnimationFrame targetFrame = _gpuAnimationDataScriptableObject.GPUAnimationFrames.Find(elem => name == elem.AnimationName);
+            if (targetFrame == null)
+            {
+                Debug.LogError(string.Format(
+                    "[GPUAnimationController] animation is not found - obj name: {0}, animation name: {1}",
+                    gameObject.name,
+                    name
+                ));
+                return;
+            }
+
+            UpdateFrameInfo(targetFrame);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        public void PlayAnimation(int index)
+        {
+            GPUAnimationFrame targetFrame = _gpuAnimationDataScriptableObject.GPUAnimationFrames[index];
+            if (targetFrame == null)
+            {
+                Debug.LogError(string.Format(
+                    "[GPUAnimationController] animation is not found - obj name: {0}, animation name: {1}",
+                    gameObject.name,
+                    name
+                ));
+                return;
+            }
+
+            UpdateFrameInfo(targetFrame);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="speed"></param>
+        public void SetAnimationSpeed(float speed)
+        {
+            _animationSpeed = speed;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        public void SetAnimationOffset(float offset)
+        {
+            _animationOffset = offset;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="flag"></param>
+        public void SetIsRuntime(bool flag)
+        {
+            _isRuntime = flag;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
         public void SetAnimationData(GPUAnimationDataScriptableObject data)
         {
             _gpuAnimationDataScriptableObject = data;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="color"></param>
         public void SetColor(Color color)
         {
             // if (_materialPropertyBlock == null)
@@ -198,6 +218,42 @@ namespace GPUAnimationBaker
             // _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
 
             _materialInstance.SetColor("_CustomColor", color);
+        }
+
+        // ----------------------------------------------------------------------------------
+        // private 
+        // ----------------------------------------------------------------------------------
+
+        // private MaterialPropertyBlock _materialPropertyBlock;
+        private Material _materialInstance;
+
+        private GPUAnimationFrame _currentGPUAnimationFrameInfo;
+
+        private int _currentGPUAnimationInitialFrame;
+
+        private float _animationSpeed = 1;
+
+        private float _animationOffset = 0;
+
+        private bool _isRuntime = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="frameInfo"></param>
+        void UpdateFrameInfo(GPUAnimationFrame frameInfo)
+        {
+            _currentGPUAnimationFrameInfo = frameInfo;
+            _currentGPUAnimationInitialFrame = 0;
+            if (_currentGPUAnimationFrameIndex != 0)
+            {
+                for (int i = 0; i < _currentGPUAnimationFrameIndex; i++)
+                {
+                    _currentGPUAnimationInitialFrame += _gpuAnimationDataScriptableObject.GPUAnimationFrames[i].Frames;
+                }
+                // TODO: -1 の必要ある？
+                // _currentGPUAnimationInitialFrame -= 1;
+            }
         }
     }
 }

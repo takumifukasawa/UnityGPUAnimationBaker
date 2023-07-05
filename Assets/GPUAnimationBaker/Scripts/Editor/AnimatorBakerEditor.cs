@@ -5,10 +5,16 @@ using UnityEditor;
 
 namespace GPUAnimationBaker
 {
-
     [CustomEditor(typeof(AnimatorBaker))]
     public class AnimatorBakerEditor : Editor
     {
+        // ----------------------------------------------------------------------------------
+        // public
+        // ----------------------------------------------------------------------------------
+
+        /// <summary>
+        /// 
+        /// </summary>
         public override void OnInspectorGUI()
         {
             AnimatorBaker script = target as AnimatorBaker;
@@ -21,20 +27,5 @@ namespace GPUAnimationBaker
                 EditorCoroutine.Start(script.Generate());
             }
         }
-
-        // void Start()
-        // {
-        //     EditorApplication.update += Update;
-        // }
-
-        // void Stop()
-        // {
-        //     EditorApplication.update -= Update;
-        // }
-
-        // void Update()
-        // {
-        // }
     }
-
 }
