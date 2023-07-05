@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 
 #if UNITY_EDITOR
+using System;
 using UnityEditor;
 using System.IO;
 #endif
@@ -12,7 +13,6 @@ namespace GPUAnimationBaker
 {
     public class VertexAttributesBaker
     {
-
         private struct VertexAttributes
         {
             public Vector3 Position;
@@ -113,6 +113,33 @@ namespace GPUAnimationBaker
             _bakedNormalRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
             _bakedTangentRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
 
+            var boneWeights = _skinnedMeshRenderer.sharedMesh.GetAllBoneWeights();
+            var bonesPerVertex = _skinnedMeshRenderer.sharedMesh.GetBonesPerVertex();
+
+            Debug.Log("-------------------");
+            var boneWeightIndex = 0;
+            for (var vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
+            {
+                var totalWeight = 0f;
+                var numberOfBonesForThisVertex = bonesPerVertex[vertexIndex];
+                Debug.Log($"vertex index: {vertexIndex}, influence bone num: {numberOfBonesForThisVertex}");
+                for (var i = 0; i < numberOfBonesForThisVertex; i++)
+                {
+                    var currentBoneWeight = boneWeights[boneWeightIndex];
+                    totalWeight += currentBoneWeight.weight;
+                    if (i > 0)
+                    {
+                        Debug.Assert(boneWeights[boneWeightIndex - 1].weight != currentBoneWeight.weight);
+                    }
+
+                    boneWeightIndex++;
+                }
+
+                Debug.Assert(Mathf.Approximately(1f, totalWeight));
+            }
+
+            Debug.Log("-------------------");
+
             // for (int i = 0; i < textureSize.x * textureSize.y - pixels; i++)
             // {
             //     _vertexAttributesList.Add(new VertexAttributes()
@@ -179,6 +206,7 @@ namespace GPUAnimationBaker
             {
                 AssetDatabase.CreateFolder("Assets", folderName);
             }
+
             string subFolder = name;
             string subFolderPath = Path.Combine(folderPath, subFolder);
             if (!AssetDatabase.IsValidFolder(subFolderPath))
@@ -254,16 +282,17 @@ namespace GPUAnimationBaker
 
             staticMeshGameObject.AddComponent<MeshRenderer>().sharedMaterial = runtimeMaterial;
 
+            staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = _runtimeMesh;
+
+            Debug.Log($"[VertexAttributesBaker.SaveAssets] static mesh go: {staticMeshGameObject}");
             GPUAnimationController gpuAnimationController = staticMeshGameObject.AddComponent<GPUAnimationController>();
             gpuAnimationController.SetAnimationData(gpuAnimationData);
             gpuAnimationController.SetIsRuntime(false);
 
-            staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = _runtimeMesh;
-
             PrefabUtility.SaveAsPrefabAsset(
                 staticMeshGameObject,
                 Path.Combine(folderPath, name + ".prefab").Replace("\\", "/")
-            // Path.Combine(subFolderPath, name + ".prefab").Replace("\\", "/")
+                // Path.Combine(subFolderPath, name + ".prefab").Replace("\\", "/")
             );
 
             // ----
@@ -315,6 +344,7 @@ namespace GPUAnimationBaker
                 // refUV.Add(new Vector2(i, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
                 refUV.Add(new Vector2(i, 0));
             }
+
             mesh.SetUVs(uvChannel, refUV);
 
             mesh.normals = sourceMesh.normals;
@@ -336,6 +366,7 @@ namespace GPUAnimationBaker
                 {
                     break;
                 }
+
                 if (isCheckW)
                 {
                     rect.x = Mathf.NextPowerOfTwo(rect.x + 1);
@@ -344,11 +375,12 @@ namespace GPUAnimationBaker
                 {
                     rect.y = Mathf.NextPowerOfTwo(rect.y + 1);
                 }
+
                 isCheckW = !isCheckW;
             }
+
             Debug.Log(string.Format("[VertexAttributesBaker] pixels: {0}, width: {1}, height: {2}", pixels, rect.x, rect.y));
             return rect;
         }
     }
-
 }

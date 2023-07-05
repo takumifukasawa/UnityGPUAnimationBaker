@@ -48,10 +48,20 @@ namespace GPUAnimationBaker
 
         private bool _isRuntime = true;
 
+        // public void Setup()
+        // {
+        //     _meshRenderer = GetComponent<MeshRenderer>();
+        // }
+       
+        // TODO: bakerでaddcomponentした時も呼ばれるのでうまいこと回避したい
         void Awake()
         {
             // _materialPropertyBlock = new MaterialPropertyBlock();
             // _materialInstance = _meshRenderer.sharedMaterial;
+            if (_meshRenderer == null)
+            {
+                _meshRenderer = GetComponent<MeshRenderer>();
+            }
             _materialInstance = _meshRenderer.material;
 
             if (_gpuAnimationDataScriptableObject == null)

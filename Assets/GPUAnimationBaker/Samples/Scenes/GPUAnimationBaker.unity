@@ -587,7 +587,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 934ec335a67cf2c4ca26915d9b28d3a7, type: 3}
       propertyPath: m_Name
-      value: voxel-human-test
+      value: voxel-human-test-bake-skinning
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 934ec335a67cf2c4ca26915d9b28d3a7, type: 3}
       propertyPath: m_Controller
@@ -738,71 +738,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!1001 &1665882825
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 3.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 985235548725331339, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5796240317000160835, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5796240317000160835, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: _meshRenderer
-      value: 
-      objectReference: {fileID: 2024909827}
-    - target: {fileID: 6877433687489087359, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-      propertyPath: m_Name
-      value: voxel-human-test (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
 --- !u!1001 &1782562153
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -876,9 +811,4 @@ PrefabInstance:
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2042339529825886703, guid: a655fb19de6454335bd688334bc52dd9, type: 3}
   m_PrefabInstance: {fileID: 1782562153}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &2024909827 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 2779507383954017519, guid: 634a56191dcfe4f03a558577f4ac7461, type: 3}
-  m_PrefabInstance: {fileID: 1665882825}
   m_PrefabAsset: {fileID: 0}
