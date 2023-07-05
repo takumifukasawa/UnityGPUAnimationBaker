@@ -590,6 +590,10 @@ PrefabInstance:
       value: voxel-human-test-bake-skinning
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 934ec335a67cf2c4ca26915d9b28d3a7, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 934ec335a67cf2c4ca26915d9b28d3a7, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 487a376a98b08ff41bf979175a7d913d, type: 2}
@@ -616,7 +620,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8dba03481a5142059f92ceda718850a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bakerComputeShader: {fileID: 7200000, guid: 93d7f87f2765ed64bb24e8717287bb46, type: 3}
+  _bakerComputeShader: {fileID: 7200000, guid: 8a0749b1c2364adda7c8d805aa37d97c, type: 3}
   _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
   _animationFps: 20
   _uvChannel: 1

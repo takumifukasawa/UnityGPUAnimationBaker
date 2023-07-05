@@ -1,0 +1,32 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct BoneAttributes
+{
+    matrix bone;
+};
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> OutBones;
+StructuredBuffer<BoneAttributes> InputData;
+
+int TextureWidth;
+int VertexCount;
+
+[numthreads(1,1,1)]
+void CSMain(uint2 id : SV_DispatchThreadID)
+{
+    int dataIndex = id.y * TextureWidth + id.x;
+    BoneAttributes OutputData = InputData[dataIndex];
+
+    float2 uv0 = float2(id.x + 0, id.y);
+    float2 uv1 = float2(id.x + 1, id.y);
+    float2 uv2 = float2(id.x + 2, id.y);
+    float2 uv3 = float2(id.x + 3, id.y);
+
+    OutBones[uv0] = OutputData.bone[0];
+    OutBones[uv1] = OutputData.bone[1];
+    OutBones[uv2] = OutputData.bone[2];
+    OutBones[uv3] = OutputData.bone[3];
+}

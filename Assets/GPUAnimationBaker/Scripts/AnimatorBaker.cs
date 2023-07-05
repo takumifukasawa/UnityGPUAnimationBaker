@@ -86,10 +86,15 @@ namespace GPUAnimationBaker
                 {
                     animator.Play(animationClip.name, 0, (float)i / currentAnimationClipFrames);
                     yield return 0;
-                    for (int j = 0; j < vertexCount; j++)
+                    // for (int j = 0; j < vertexCount; j++)
+                    // {
+                    //     int vertexIndex = j;
+                    //     _baker.MemoryVertexAttributes(vertexIndex);
+                    // }
+                    for (int j = 0; j < skinnedMeshRenderer.bones.Length; j++)
                     {
-                        int vertexIndex = j;
-                        _baker.MemoryVertexAttributes(vertexIndex);
+                        int boneIndex = j;
+                        _baker.MemoryBoneAttributes(boneIndex);
                     }
                 }
             } // end foreach

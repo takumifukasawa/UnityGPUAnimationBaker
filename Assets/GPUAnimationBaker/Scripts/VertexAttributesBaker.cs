@@ -37,7 +37,7 @@ namespace GPUAnimationBaker
             //     GL.Clear(true, true, Color.clear);
             // }
 
-            _vertexAttributesList = new List<VertexAttributes>();
+            _boneAttributesList = new List<BoneAttributes>();
             _gpuAnimationFrames = new List<GPUAnimationFrame>();
 
             _skinnedMeshRenderer = skinnedMeshRenderer;
@@ -50,17 +50,21 @@ namespace GPUAnimationBaker
         /// 
         /// </summary>
         /// <param name="vertexIndex"></param>
-        public void MemoryVertexAttributes(int vertexIndex)
+        // tmp
+        // public void MemoryVertexAttributes(int vertexIndex)
+        public void MemoryBoneAttributes(int boneIndex)
         {
             _skinnedMeshRenderer.BakeMesh(_memoryMesh);
 
-            VertexAttributes vertexAttributes = new VertexAttributes()
+            BoneAttributes vertexAttributes = new BoneAttributes()
             {
-                Position = _memoryMesh.vertices[vertexIndex],
-                Normal = _memoryMesh.normals[vertexIndex],
-                Tangent = _memoryMesh.tangents[vertexIndex],
+                // tmp
+                // Position = _memoryMesh.vertices[vertexIndex],
+                // Normal = _memoryMesh.normals[vertexIndex],
+                // Tangent = _memoryMesh.tangents[vertexIndex],
+                Bones = _skinnedMeshRenderer.bones[boneIndex].localToWorldMatrix
             };
-            _vertexAttributesList.Add(vertexAttributes);
+            _boneAttributesList.Add(vertexAttributes);
         }
 
         /// <summary>
@@ -87,24 +91,37 @@ namespace GPUAnimationBaker
             int frames,
             int uvChannel)
         {
-            int vertexCount = _skinnedMeshRenderer.sharedMesh.vertexCount;
+            // check for debug
+            // for (int i = 0; i < _skinnedMeshRenderer.bones.Length; i++)
+            // {
+            //     Debug.Log($"hogehoge - bone name: {_skinnedMeshRenderer.bones[i].gameObject.name}");
+            //     Debug.Log($"hogehoge - bone l -> w:");
+            //     Debug.Log($"{_skinnedMeshRenderer.bones[i].localToWorldMatrix}");
+            // }
 
-            int pixels = vertexCount * frames;
+            // int vertexCount = _skinnedMeshRenderer.sharedMesh.vertexCount;
+            int boneCount = _skinnedMeshRenderer.bones.Length;
+
+            // for bake vertices
+            // int pixels = vertexCount * frames;
+            // for bake skinning
+            int pixels = boneCount * 4 * frames;
 
             Vector2Int textureSize = GetTexturePOTRect(pixels);
 
             int textureWidth = textureSize.x;
             int textureHeight = textureSize.y;
 
-            _bakedPositionRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
-            _bakedNormalRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
-            _bakedTangentRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
-
+            // tmp
+            // _bakedPositionRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
+            // _bakedNormalRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
+            // _bakedTangentRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
+            _bakedBonesRenderTexture = CreateRenderTexture(textureWidth, textureHeight);
 
             // for debug
             // for (int i = 0; i < textureSize.x * textureSize.y - pixels; i++)
             // {
-            //     _vertexAttributesList.Add(new VertexAttributes()
+            //     _boneAttributesList.Add(new VertexAttributes()
             //     {
             //         Position = Vector3.zero,
             //         Normal = Vector3.zero,
@@ -113,22 +130,31 @@ namespace GPUAnimationBaker
             // }
 
             GraphicsBuffer graphicsBuffer = new GraphicsBuffer(
+                // tmp
+                // GraphicsBuffer.Target.Structured,
+                // _boneAttributesList.Count * 3,
+                // Marshal.SizeOf(new Vector3())
                 GraphicsBuffer.Target.Structured,
-                _vertexAttributesList.Count * 3,
-                Marshal.SizeOf(new Vector3())
+                _boneAttributesList.Count,
+                Marshal.SizeOf(new Matrix4x4())
             );
-            graphicsBuffer.SetData(_vertexAttributesList.ToArray());
+            graphicsBuffer.SetData(_boneAttributesList.ToArray());
 
             int kernel = bakerComputeShader.FindKernel("CSMain");
             // uint x, y, z;
             // bakerComputeShader.GetKernelThreadGrouprects(kernel, out x, out y, out z);
 
-            bakerComputeShader.SetInt("VertexCount", vertexCount);
+            // tmp
+            // bakerComputeShader.SetInt("VertexCount", vertexCount);
+            // bakerComputeShader.SetInt("TextureWidth", textureWidth);
+            // bakerComputeShader.SetBuffer(kernel, "InputData", graphicsBuffer);
+            // bakerComputeShader.SetTexture(kernel, "OutPosition", _bakedPositionRenderTexture);
+            // bakerComputeShader.SetTexture(kernel, "OutNormal", _bakedNormalRenderTexture);
+            // bakerComputeShader.SetTexture(kernel, "OutTangent", _bakedTangentRenderTexture);
+            bakerComputeShader.SetInt("BoneCount", boneCount);
             bakerComputeShader.SetInt("TextureWidth", textureWidth);
             bakerComputeShader.SetBuffer(kernel, "InputData", graphicsBuffer);
-            bakerComputeShader.SetTexture(kernel, "OutPosition", _bakedPositionRenderTexture);
-            bakerComputeShader.SetTexture(kernel, "OutNormal", _bakedNormalRenderTexture);
-            bakerComputeShader.SetTexture(kernel, "OutTangent", _bakedTangentRenderTexture);
+            bakerComputeShader.SetTexture(kernel, "OutBones", _bakedBonesRenderTexture);
 
             bakerComputeShader.Dispatch(
                 kernel,
@@ -138,25 +164,30 @@ namespace GPUAnimationBaker
                 1
             );
 
+            // Debug.Log(string.Format(
+            //     "[VertexAttributesBaker] Bake - width: {0}, height: {1}, vertexCount: {2}, frames: {3}, vertexAttributesList count: {4}",
+            //     textureWidth,
+            //     textureHeight,
+            //     vertexCount,
+            //     frames,
+            //     _boneAttributesList.Count
+            // ));
             Debug.Log(string.Format(
-                "[VertexAttributesBaker] Bake - width: {0}, height: {1}, vertexCount: {2}, frames: {3}, vertexAttributesList count: {4}",
+                "[VertexAttributesBaker] Bake - width: {0}, height: {1}, boneCount: {2}, frames: {3}, vertexAttributesList count: {4}",
                 textureWidth,
                 textureHeight,
-                vertexCount,
+                boneCount,
                 frames,
-                _vertexAttributesList.Count
+                _boneAttributesList.Count
             ));
 
             graphicsBuffer.Release();
 
-            _bakedPositionMap = ConvertRenderTextureToTexture2D(_bakedPositionRenderTexture);
-            _bakedNormalMap = ConvertRenderTextureToTexture2D(_bakedNormalRenderTexture);
-            _bakedTangentMap = ConvertRenderTextureToTexture2D(_bakedTangentRenderTexture);
-
-            // Graphics.CopyTexture(_bakedPositionRenderTexture, _bakedPositionMap);
-            // Graphics.CopyTexture(_bakedNormalRenderTexture, _bakedNormalMap);
-            // Graphics.CopyTexture(_bakedTangentRenderTexture, _bakedTangentMap);
-
+            // tmp
+            // _bakedPositionMap = ConvertRenderTextureToTexture2D(_bakedPositionRenderTexture);
+            // _bakedNormalMap = ConvertRenderTextureToTexture2D(_bakedNormalRenderTexture);
+            // _bakedTangentMap = ConvertRenderTextureToTexture2D(_bakedTangentRenderTexture);
+            _bakedBonesMap = ConvertRenderTextureToTexture2D(_bakedBonesRenderTexture);
 
             _runtimeMesh = CreateMeshForGPUAnimation(
                 _skinnedMeshRenderer.sharedMesh,
@@ -182,33 +213,43 @@ namespace GPUAnimationBaker
                 AssetDatabase.CreateFolder(folderPath, subFolder);
             }
 
-            // staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = skinnedMeshRenderer.sharedMesh;
             Material runtimeMaterial = new Material(runtimeShader);
-            runtimeMaterial.SetTexture("_BakedPositionMap", _bakedPositionMap);
-            runtimeMaterial.SetTexture("_BakedNormalMap", _bakedNormalMap);
-            runtimeMaterial.SetTexture("_BakedTangentMap", _bakedTangentMap);
+            // tmp
+            // runtimeMaterial.SetTexture("_BakedPositionMap", _bakedPositionMap);
+            // runtimeMaterial.SetTexture("_BakedNormalMap", _bakedNormalMap);
+            // runtimeMaterial.SetTexture("_BakedTangentMap", _bakedTangentMap);
+
+            runtimeMaterial.SetTexture("_BakedBonesMap", _bakedBonesMap);
             // TODO
             // runtimeMaterial.SetFloat("_BakedAnimationDuration", 0);
 
+            // tmp
+            // AssetDatabase.CreateAsset(
+            //     _bakedPositionMap,
+            //     Path.Combine(
+            //         subFolderPath,
+            //         string.Format("{0}.BakedPositionMap.asset", name)
+            //     )
+            // );
+            // AssetDatabase.CreateAsset(
+            //     _bakedNormalMap,
+            //     Path.Combine(
+            //         subFolderPath,
+            //         string.Format("{0}.BakedNormalMap.asset", name)
+            //     )
+            // );
+            // AssetDatabase.CreateAsset(
+            //     _bakedTangentMap,
+            //     Path.Combine(
+            //         subFolderPath,
+            //         string.Format("{0}.BakedTangentMap.asset", name)
+            //     )
+            // );
             AssetDatabase.CreateAsset(
-                _bakedPositionMap,
+                _bakedBonesMap,
                 Path.Combine(
                     subFolderPath,
-                    string.Format("{0}.BakedPositionMap.asset", name)
-                )
-            );
-            AssetDatabase.CreateAsset(
-                _bakedNormalMap,
-                Path.Combine(
-                    subFolderPath,
-                    string.Format("{0}.BakedNormalMap.asset", name)
-                )
-            );
-            AssetDatabase.CreateAsset(
-                _bakedTangentMap,
-                Path.Combine(
-                    subFolderPath,
-                    string.Format("{0}.BakedTangentMap.asset", name)
+                    string.Format("{0}.BakedBonesMap.asset", name)
                 )
             );
             AssetDatabase.CreateAsset(
@@ -232,8 +273,11 @@ namespace GPUAnimationBaker
                 fps,
                 totalDuration,
                 totalFrames,
-                _bakedPositionRenderTexture.width,
-                _bakedPositionRenderTexture.height,
+                // tmp
+                // _bakedPositionRenderTexture.width,
+                // _bakedPositionRenderTexture.height,
+                _bakedBonesRenderTexture.width,
+                _bakedBonesRenderTexture.height,
                 _skinnedMeshRenderer.sharedMesh.vertexCount,
                 _gpuAnimationFrames,
                 GetBoneOffsetMatrices(_skinnedMeshRenderer).ToList()
@@ -277,34 +321,42 @@ namespace GPUAnimationBaker
         /// </summary>
         public void Dispose()
         {
-            _bakedPositionRenderTexture.Release();
-            _bakedPositionRenderTexture = null;
-            _bakedNormalRenderTexture.Release();
-            _bakedNormalRenderTexture = null;
-            _bakedTangentRenderTexture.Release();
-            _bakedTangentRenderTexture = null;
+            // _bakedPositionRenderTexture.Release();
+            // _bakedPositionRenderTexture = null;
+            // _bakedNormalRenderTexture.Release();
+            // _bakedNormalRenderTexture = null;
+            // _bakedTangentRenderTexture.Release();
+            // _bakedTangentRenderTexture = null;
+            _bakedBonesRenderTexture.Release();
+            _bakedBonesRenderTexture = null;
         }
 
         // ----------------------------------------------------------------------------------
         // private
         // ----------------------------------------------------------------------------------
 
-        private struct VertexAttributes
+        private struct BoneAttributes
         {
-            public Vector3 Position;
-            public Vector3 Normal;
-            public Vector3 Tangent;
+            // tmp
+            // public Vector3 Position;
+            // public Vector3 Normal;
+            // public Vector3 Tangent;
+            public Matrix4x4 Bones;
         }
 
-        private RenderTexture _bakedPositionRenderTexture;
-        private RenderTexture _bakedNormalRenderTexture;
-        private RenderTexture _bakedTangentRenderTexture;
+        // tmp
+        // private RenderTexture _bakedPositionRenderTexture;
+        // private RenderTexture _bakedNormalRenderTexture;
+        // private RenderTexture _bakedTangentRenderTexture;
+        private RenderTexture _bakedBonesRenderTexture;
 
-        private Texture2D _bakedPositionMap;
-        private Texture2D _bakedNormalMap;
-        private Texture2D _bakedTangentMap;
+        // tmp
+        // private Texture2D _bakedPositionMap;
+        // private Texture2D _bakedNormalMap;
+        // private Texture2D _bakedTangentMap;
+        private Texture2D _bakedBonesMap;
 
-        private List<VertexAttributes> _vertexAttributesList;
+        private List<BoneAttributes> _boneAttributesList;
 
         private List<GPUAnimationFrame> _gpuAnimationFrames;
 
@@ -433,12 +485,12 @@ namespace GPUAnimationBaker
                 var vertexBoneWeight = new List<BoneWeight1>();
                 var totalWeight = 0f;
                 var numberOfBonesForThisVertex = bonesPerVertex[vertexIndex];
-                Debug.Log($"vertex index: {vertexIndex}, influence bone num: {numberOfBonesForThisVertex}");
+                // Debug.Log($"vertex index: {vertexIndex}, influence bone num: {numberOfBonesForThisVertex}");
                 for (var i = 0; i < numberOfBonesForThisVertex; i++)
                 {
                     var currentBoneWeight = boneWeights[boneWeightIndex];
                     totalWeight += currentBoneWeight.weight;
-                    Debug.Log($"vertex index: {vertexIndex}, influence bone index: {currentBoneWeight.boneIndex}, bone weight: {currentBoneWeight.weight}");
+                    // Debug.Log($"vertex index: {vertexIndex}, influence bone index: {currentBoneWeight.boneIndex}, bone weight: {currentBoneWeight.weight}");
                     if (i > 0)
                     {
                         Debug.Assert(boneWeights[boneWeightIndex - 1].weight != currentBoneWeight.weight);
@@ -595,6 +647,29 @@ namespace GPUAnimationBaker
 
             return mesh;
         }
+
+        private static List<Matrix4x4> CalculateBonePoseMatrices(Transform[] bones)
+        {
+            var bonePoseMatrices = new List<Matrix4x4>();
+            for (int i = 0; i < bones.Length; i++)
+            {
+                // var bone = bones[i];
+                // var mat = InternalCalculateBonePoseMatrix(bone);
+                bonePoseMatrices.Add(bones[i].localToWorldMatrix);
+            }
+
+            return bonePoseMatrices;
+        }
+
+        // private static Matrix4x4 InternalCalculateBonePoseMatrix(Transform bone)
+        // {
+        //     var resultMatrix = Matrix4x4.identity;
+        //     resultMatrix = bone.localToWorldMatrix;
+        //     if (!bone.parent)
+        //     {
+        //         return resultMatrix;
+        //     }
+        // }
 
         /// <summary>
         /// 
