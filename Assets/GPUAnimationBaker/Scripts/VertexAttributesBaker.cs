@@ -117,6 +117,8 @@ namespace GPUAnimationBaker
             var bonesPerVertex = _skinnedMeshRenderer.sharedMesh.GetBonesPerVertex();
 
             Debug.Log("-------------------");
+            Debug.Log(_skinnedMeshRenderer.sharedMesh.bindposes);
+            Debug.Log($"bind pose count: {_skinnedMeshRenderer.sharedMesh.bindposes.Length}");
             var boneWeightIndex = 0;
             for (var vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
             {
@@ -127,6 +129,7 @@ namespace GPUAnimationBaker
                 {
                     var currentBoneWeight = boneWeights[boneWeightIndex];
                     totalWeight += currentBoneWeight.weight;
+                    Debug.Log($"vertex index: {vertexIndex}, influence bone index: {currentBoneWeight.boneIndex}, bone weight: {currentBoneWeight.weight}");
                     if (i > 0)
                     {
                         Debug.Assert(boneWeights[boneWeightIndex - 1].weight != currentBoneWeight.weight);
