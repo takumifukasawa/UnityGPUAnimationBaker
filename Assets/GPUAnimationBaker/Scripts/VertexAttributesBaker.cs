@@ -154,6 +154,7 @@ namespace GPUAnimationBaker
                 16 * 4
             );
             computeBuffer.SetData(_boneAttributesList.ToArray());
+            Debug.Log($"graphics buffer - count: {graphicsBuffer.count}");
 
             int kernel = bakerComputeShader.FindKernel("CSMain");
             // uint x, y, z;

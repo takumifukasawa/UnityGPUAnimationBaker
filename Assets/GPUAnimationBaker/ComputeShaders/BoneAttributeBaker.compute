@@ -20,7 +20,7 @@ int VertexCount;
 void CSMain(uint2 id : SV_DispatchThreadID)
 {
     int dataIndex = id.y * TextureWidth + id.x;
-    BoneAttributes OutputData = InputData[dataIndex];
+    BoneAttributes OutputData = InputData[1];
 
     float2 uv0 = float2(id.x * 4 + 0, id.y);
     float2 uv1 = float2(id.x * 4 + 1, id.y);
