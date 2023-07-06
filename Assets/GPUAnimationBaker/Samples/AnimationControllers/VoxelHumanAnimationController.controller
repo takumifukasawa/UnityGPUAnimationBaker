@@ -42,8 +42,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: b9c80e1ae21dd0241b96189c5e6fa46e,
-    type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: b9c80e1ae21dd0241b96189c5e6fa46e, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -69,8 +68,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 0b7ad6274662b374781293a3f25c1706,
-    type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: 0b7ad6274662b374781293a3f25c1706, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -124,8 +122,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 6673c7e373870284d9f16a7061a4387b,
-    type: 3}
+  m_Motion: {fileID: -203655887218126122, guid: 6673c7e373870284d9f16a7061a4387b, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

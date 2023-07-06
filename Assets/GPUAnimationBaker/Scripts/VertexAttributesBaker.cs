@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System;
 using UnityEditor;
 using System.IO;
+using UnityEngine.Rendering;
 #endif
 
 namespace GPUAnimationBaker
@@ -132,6 +133,9 @@ namespace GPUAnimationBaker
             //     });
             // }
 
+            // _boneAttributesList = _boneAttributesList.GetRange(0, 1);
+            _boneAttributesList = _boneAttributesList.GetRange(0, 1);
+
             GraphicsBuffer graphicsBuffer = new GraphicsBuffer(
                 // tmp
                 // GraphicsBuffer.Target.Structured,
@@ -140,8 +144,16 @@ namespace GPUAnimationBaker
                 GraphicsBuffer.Target.Structured,
                 _boneAttributesList.Count,
                 Marshal.SizeOf(new Matrix4x4())
+                // sizeof(VertexAttribute)
             );
+            Debug.Log($"marshal matrix size: {Marshal.SizeOf(new Matrix4x4())}, {4 * 4 * sizeof(float)}, {sizeof(VertexAttribute)}");
             graphicsBuffer.SetData(_boneAttributesList.ToArray());
+
+            ComputeBuffer computeBuffer = new ComputeBuffer(
+                _boneAttributesList.Count,
+                16 * 4
+            );
+            computeBuffer.SetData(_boneAttributesList.ToArray());
 
             int kernel = bakerComputeShader.FindKernel("CSMain");
             // uint x, y, z;
@@ -156,8 +168,18 @@ namespace GPUAnimationBaker
             // bakerComputeShader.SetTexture(kernel, "OutTangent", _bakedTangentRenderTexture);
             bakerComputeShader.SetInt("BoneCount", boneCount);
             bakerComputeShader.SetInt("TextureWidth", textureWidth);
+            bakerComputeShader.SetInt("TextureHeight", textureHeight);
             bakerComputeShader.SetBuffer(kernel, "InputData", graphicsBuffer);
+            // bakerComputeShader.SetBuffer(kernel, "InputData", computeBuffer);
             bakerComputeShader.SetTexture(kernel, "OutBones", _bakedBonesRenderTexture);
+            List<Matrix4x4> boneMatrices = new List<Matrix4x4>();
+            for (int i = 0; i < _boneAttributesList.Count; i++)
+            {
+                boneMatrices.Add(_boneAttributesList[i].Bones);
+            }
+
+            Debug.Log($"bone matrices count: {boneMatrices.Count}");
+            // bakerComputeShader.SetMatrixArray("BoneMatrices", boneMatrices.ToArray());
 
             // tmp
             // bakerComputeShader.Dispatch(
@@ -191,6 +213,7 @@ namespace GPUAnimationBaker
             ));
 
             graphicsBuffer.Release();
+            computeBuffer.Release();
 
             // tmp
             // _bakedPositionMap = ConvertRenderTextureToTexture2D(_bakedPositionRenderTexture);
@@ -227,7 +250,6 @@ namespace GPUAnimationBaker
             // runtimeMaterial.SetTexture("_BakedPositionMap", _bakedPositionMap);
             // runtimeMaterial.SetTexture("_BakedNormalMap", _bakedNormalMap);
             // runtimeMaterial.SetTexture("_BakedTangentMap", _bakedTangentMap);
-
             runtimeMaterial.SetTexture("_BakedBonesMap", _bakedBonesMap);
             // TODO
             // runtimeMaterial.SetFloat("_BakedAnimationDuration", 0);

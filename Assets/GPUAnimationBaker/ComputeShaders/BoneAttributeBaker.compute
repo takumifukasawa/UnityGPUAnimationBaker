@@ -12,7 +12,9 @@ RWTexture2D<float4> OutBones;
 StructuredBuffer<BoneAttributes> InputData;
 
 int TextureWidth;
+int TextureHeight;
 int VertexCount;
+// matrix BoneMatrices[65536];
 
 [numthreads(1,1,1)]
 void CSMain(uint2 id : SV_DispatchThreadID)
@@ -25,8 +27,54 @@ void CSMain(uint2 id : SV_DispatchThreadID)
     float2 uv2 = float2(id.x * 4 + 2, id.y);
     float2 uv3 = float2(id.x * 4 + 3, id.y);
 
-    OutBones[uv0] = OutputData.bone[0];
-    OutBones[uv1] = OutputData.bone[1];
-    OutBones[uv2] = OutputData.bone[2];
-    OutBones[uv3] = OutputData.bone[3];
+    // float x = (float)id.x * 4 / (float)TextureWidth;
+    // float y = (float)id.y / (float)TextureHeight;
+    // if(y < .9)
+    // {
+    //     y = 1;
+    // } else
+    // {
+    //     y = 0;
+    // }
+    // OutBones[uv0] = float4(1, y, 1, 1);
+    // OutBones[uv1] = float4(1, y, 1, 1);
+    // OutBones[uv2] = float4(1, y, 1, 1);
+    // OutBones[uv3] = float4(1, y, 1, 1);
+    // return;
+
+    // debug
+    // OutBones[uv0] = float4(1, 1, 1, 1);
+    // OutBones[uv1] = float4(1, 1, 1, 1);
+    // OutBones[uv2] = float4(1, 1, 1, 1);
+    // OutBones[uv3] = float4(1, 1, 1, 1);
+
+    // return;
+
+    // default
+    // OutBones[uv0] = OutputData.bone[0];
+    // OutBones[uv1] = OutputData.bone[1];
+    // OutBones[uv2] = OutputData.bone[2];
+    // // OutBones[uv3] = OutputData.bone[3];
+    // OutBones[uv3] = float4(1, 1, 1, 1);
+
+    OutBones[uv0] = float4(
+        OutputData.bone[0][0],
+        OutputData.bone[0][1],
+        OutputData.bone[0][2],
+        OutputData.bone[0][3]
+    );
+    OutBones[uv1] = float4(
+        OutputData.bone[1][0],
+        OutputData.bone[1][1],
+        OutputData.bone[1][2],
+        OutputData.bone[1][3]
+    );
+    OutBones[uv2] = float4(
+        OutputData.bone[2][0],
+        OutputData.bone[2][1],
+        OutputData.bone[2][2],
+        OutputData.bone[2][3]
+    );
+
+    OutBones[uv3] = float4(1, 1, 1, 1);
 }
