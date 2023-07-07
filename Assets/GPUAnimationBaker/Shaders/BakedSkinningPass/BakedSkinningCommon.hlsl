@@ -60,12 +60,26 @@ float2 CalcBoneUV(int boneIndex, int matrixColIndex = 0)
         // float frameCoord = frameIndex / instancedTextureHeight + frameCellOffset;
     
         // NOTE: 正しいやつ
-        float frameIndex = instancedCurrentAnimationInitialFrame + floor(fmod(instancedTimeOffset + _Time.y * instancedAnimationFPS * instancedAnimationSpeed, instancedCurrentAnimationFrames));
+        // animation clip frame index
+        float frameIndex =
+            instancedCurrentAnimationInitialFrame +
+                floor(
+                    fmod(
+                        instancedTimeOffset + _Time.y * instancedAnimationFPS * instancedAnimationSpeed,
+                        instancedCurrentAnimationFrames
+                    )
+                );
         // for debug
         // float frameIndex = 0;
-    
-        float boneFrameIndex = instancedBoneCount * frameIndex + boneIndex;
-    
+
+        // TODO:
+        // - ここで4かけつつ行列のベクトル分割用にoffsetするべき？
+        // - matrix col index は普通に足してok??
+        float boneFrameIndex =
+            instancedBoneCount * frameIndex * 4 +
+            boneIndex * 4 +
+            matrixColIndex;
+
         // NOTE: 正しいやつ
         float frameX = fmod(boneFrameIndex, instancedTextureWidth) / instancedTextureWidth + frameCellOffsetX;
         float frameY = floor(boneFrameIndex / instancedTextureWidth) / instancedTextureHeight + frameCellOffsetY;
