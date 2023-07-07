@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 using System;
 using UnityEditor;
 using System.IO;
-using UnityEngine.Rendering;
 #endif
 
 namespace GPUAnimationBaker
@@ -57,13 +56,19 @@ namespace GPUAnimationBaker
         {
             _skinnedMeshRenderer.BakeMesh(_memoryMesh);
 
+            var m = _skinnedMeshRenderer.bones[boneIndex].localToWorldMatrix;
+
             BoneAttributes vertexAttributes = new BoneAttributes()
             {
                 // tmp
                 // Position = _memoryMesh.vertices[vertexIndex],
                 // Normal = _memoryMesh.normals[vertexIndex],
                 // Tangent = _memoryMesh.tangents[vertexIndex],
-                Bones = _skinnedMeshRenderer.bones[boneIndex].localToWorldMatrix
+                // Bones = _skinnedMeshRenderer.bones[boneIndex].localToWorldMatrix
+                BoneRow0 = new Vector4(m.m00, m.m01, m.m02, m.m03),
+                BoneRow1 = new Vector4(m.m10, m.m11, m.m12, m.m13),
+                BoneRow2 = new Vector4(m.m20, m.m21, m.m22, m.m23),
+                BoneRow3 = new Vector4(m.m30, m.m31, m.m32, m.m33)
             };
             _boneAttributesList.Add(vertexAttributes);
         }
@@ -134,26 +139,29 @@ namespace GPUAnimationBaker
             // }
 
             // _boneAttributesList = _boneAttributesList.GetRange(0, 1);
-            _boneAttributesList = _boneAttributesList.GetRange(0, 1);
+            // _boneAttributesList = _boneAttributesList.GetRange(0, 1);
 
             GraphicsBuffer graphicsBuffer = new GraphicsBuffer(
                 // tmp
                 // GraphicsBuffer.Target.Structured,
                 // _boneAttributesList.Count * 3,
                 // Marshal.SizeOf(new Vector3())
+                // t
+                // GraphicsBuffer.Target.Structured,
+                // _boneAttributesList.Count,
+                // Marshal.SizeOf(new Matrix4x4())
                 GraphicsBuffer.Target.Structured,
                 _boneAttributesList.Count,
-                Marshal.SizeOf(new Matrix4x4())
-                // sizeof(VertexAttribute)
+                Marshal.SizeOf(new Vector4()) * 4
             );
-            Debug.Log($"marshal matrix size: {Marshal.SizeOf(new Matrix4x4())}, {4 * 4 * sizeof(float)}, {sizeof(VertexAttribute)}");
+            // Debug.Log($"marshal matrix size: {Marshal.SizeOf(new Matrix4x4())}, {4 * 4 * sizeof(float)}");
             graphicsBuffer.SetData(_boneAttributesList.ToArray());
 
-            ComputeBuffer computeBuffer = new ComputeBuffer(
-                _boneAttributesList.Count,
-                16 * 4
-            );
-            computeBuffer.SetData(_boneAttributesList.ToArray());
+            // ComputeBuffer computeBuffer = new ComputeBuffer(
+            //     _boneAttributesList.Count,
+            //     16 * 4
+            // );
+            // computeBuffer.SetData(_boneAttributesList.ToArray());
             Debug.Log($"graphics buffer - count: {graphicsBuffer.count}");
 
             int kernel = bakerComputeShader.FindKernel("CSMain");
@@ -173,13 +181,13 @@ namespace GPUAnimationBaker
             bakerComputeShader.SetBuffer(kernel, "InputData", graphicsBuffer);
             // bakerComputeShader.SetBuffer(kernel, "InputData", computeBuffer);
             bakerComputeShader.SetTexture(kernel, "OutBones", _bakedBonesRenderTexture);
-            List<Matrix4x4> boneMatrices = new List<Matrix4x4>();
-            for (int i = 0; i < _boneAttributesList.Count; i++)
-            {
-                boneMatrices.Add(_boneAttributesList[i].Bones);
-            }
+            // List<Matrix4x4> boneMatrices = new List<Matrix4x4>();
+            // for (int i = 0; i < _boneAttributesList.Count; i++)
+            // {
+            //     boneMatrices.Add(_boneAttributesList[i].Bones);
+            // }
 
-            Debug.Log($"bone matrices count: {boneMatrices.Count}");
+            // Debug.Log($"bone matrices count: {boneMatrices.Count}");
             // bakerComputeShader.SetMatrixArray("BoneMatrices", boneMatrices.ToArray());
 
             // tmp
@@ -214,7 +222,7 @@ namespace GPUAnimationBaker
             ));
 
             graphicsBuffer.Release();
-            computeBuffer.Release();
+            // computeBuffer.Release();
 
             // tmp
             // _bakedPositionMap = ConvertRenderTextureToTexture2D(_bakedPositionRenderTexture);
@@ -373,7 +381,11 @@ namespace GPUAnimationBaker
             // public Vector3 Position;
             // public Vector3 Normal;
             // public Vector3 Tangent;
-            public Matrix4x4 Bones;
+            // public Matrix4x4 Bones;
+            public Vector4 BoneRow0;
+            public Vector4 BoneRow1;
+            public Vector4 BoneRow2;
+            public Vector4 BoneRow3;
         }
 
         // tmp
