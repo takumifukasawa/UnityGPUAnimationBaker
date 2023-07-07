@@ -13,14 +13,18 @@ MonoBehaviour:
   m_Name: voxel-human-test-bake-skinning.GPUAnimationData
   m_EditorClassIdentifier: 
   FPS: 20
-  TotalDuration: 0.6333334
-  TotalFrames: 12
-  TextureWidth: 64
-  TextureHeight: 32
+  TotalDuration: 3.666667
+  TotalFrames: 72
+  TextureWidth: 128
+  TextureHeight: 64
   VertexCount: 144
   GPUAnimationFrames:
   - AnimationName: Run
     Frames: 12
+  - AnimationName: Idle
+    Frames: 40
+  - AnimationName: Walk
+    Frames: 20
   BoneOffsetMatrices:
   - e00: 0.099999994
     e01: 0

@@ -13,6 +13,7 @@ namespace GPUAnimationBaker
         public int TextureWidth;
         public int TextureHeight;
         public int VertexCount;
+        public int BoneCount;
         public List<GPUAnimationFrame> GPUAnimationFrames = new List<GPUAnimationFrame>();
         public List<Matrix4x4> BoneOffsetMatrices;
 
@@ -23,6 +24,7 @@ namespace GPUAnimationBaker
             int textureWidth,
             int textureHeight,
             int vertexCount,
+            int boneCount,
             List<GPUAnimationFrame> gpuAnimationFrames,
             List<Matrix4x4> boneOffsetMatrices
         )
@@ -35,6 +37,7 @@ namespace GPUAnimationBaker
             gpuAnimationDataScriptableObject.TextureWidth = textureWidth;
             gpuAnimationDataScriptableObject.TextureHeight = textureHeight;
             gpuAnimationDataScriptableObject.VertexCount = vertexCount;
+            gpuAnimationDataScriptableObject.BoneCount = boneCount;
             gpuAnimationDataScriptableObject.GPUAnimationFrames = gpuAnimationFrames;
             gpuAnimationDataScriptableObject.BoneOffsetMatrices = boneOffsetMatrices;
 

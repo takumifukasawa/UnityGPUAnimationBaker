@@ -34,6 +34,7 @@ struct Attributes
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
     float2 texcoord2      : TEXCOORD1;
+    float4 texcoord3 : TEXCOORD2;
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
     // ----------------------------------------------------------------   
@@ -56,7 +57,7 @@ float4 GetShadowPositionHClip(Attributes input)
     // float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
     // float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
 
-    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.texcoord2);
+    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.positionOS.xyz, input.texcoord3);
     float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput);
     float4 bakedSkinningNormalOS = GetBakedAnimationNormalOS(bakedSkinningAnimationInput);
 

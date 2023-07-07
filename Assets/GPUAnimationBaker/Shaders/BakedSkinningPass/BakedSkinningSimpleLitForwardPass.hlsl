@@ -25,10 +25,13 @@ struct Attributes
     float4 tangentOS     : TANGENT;
     float2 texcoord      : TEXCOORD0;
     // CUSTOM_LINE_BEGIN
-    float2 texcoord2      : TEXCOORD2;
+    float2 texcoord2      : TEXCOORD1;
+    float4 texcoord3 : TEXCOORD2;
     // CUSTOM_LINE_END   
-    float2 staticLightmapUV    : TEXCOORD1;
-    float2 dynamicLightmapUV    : TEXCOORD2;
+    // ORIGINAL_BEGIN use
+    // float2 staticLightmapUV    : TEXCOORD1;
+    // float2 dynamicLightmapUV    : TEXCOORD2;
+    // ORIGINAL_END
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -68,7 +71,7 @@ struct Varyings
         float4 shadowCoord             : TEXCOORD6;
     #endif
     // CUSTOM_LINE_BEGIN
-    float4 animationUV              : TEXCOORD8;
+    // float4 animationUV              : TEXCOORD8;
     // CUSTOM_LINE_END
  
     DECLARE_LIGHTMAP_OR_SH(staticLightmapUV, vertexSH, 7);
@@ -172,7 +175,7 @@ Varyings LitPassVertexSimple(Attributes input)
     // VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     // VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
 
-    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.texcoord2);
+    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.positionOS.xyz, input.texcoord3);
     float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput);
     float4 bakedSkinningNormalOS = GetBakedAnimationNormalOS(bakedSkinningAnimationInput);
     float4 bakedSkinningTangentOS = GetBakedAnimationTangentOS(bakedSkinningAnimationInput);
@@ -180,7 +183,7 @@ Varyings LitPassVertexSimple(Attributes input)
     VertexPositionInputs vertexInput = GetVertexPositionInputs(bakedSkinningPositionOS);
     VertexNormalInputs normalInput = GetVertexNormalInputs(bakedSkinningNormalOS, bakedSkinningTangentOS);
 
-    output.animationUV = bakedSkinningAnimationInput.animationUV;
+    // output.animationUV = bakedSkinningAnimationInput.animationUV;
 
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END

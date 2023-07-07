@@ -26,6 +26,7 @@ struct Attributes
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
     float2 texcoord2     : TEXCOORD1;
+    float4 texcoord3 : TEXCOORD2;
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
     // ----------------------------------------------------------------   
@@ -55,7 +56,7 @@ Varyings DepthOnlyVertex(Attributes input)
     // output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     // output.positionCS = TransformObjectToHClip(input.position.xyz);
  
-    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.texcoord2);
+    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.position.xyz, input.texcoord3);
     float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput);
  
     // BakedSkinningAnimationInfo bakedSkinningAnimationInfo = GetBakedSkinningAnimationInfo(input.texcoord2);

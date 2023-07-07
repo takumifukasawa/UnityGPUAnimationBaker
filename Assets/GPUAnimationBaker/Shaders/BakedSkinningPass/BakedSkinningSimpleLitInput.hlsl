@@ -21,10 +21,10 @@ CBUFFER_START(UnityPerMaterial)
     // ----------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
-    sampler2D _BakedPositionMap;
-    sampler2D _BakedNormalMap;
-
-    // NOTE: 一旦tangent消してみる
+    sampler2D _BakedBonesMap;
+    // NOTE: skinningパターンではいらない
+    // sampler2D _BakedPositionMap;
+    // sampler2D _BakedNormalMap;
     // sampler2D _BakedTangentMap;
 
     // float _BakedVertexRange;
@@ -39,7 +39,7 @@ CBUFFER_END
 // ----------------------------------------------------------------
 UNITY_INSTANCING_BUFFER_START(Props)
     UNITY_DEFINE_INSTANCED_PROP(half4, _CustomColor)
-    UNITY_DEFINE_INSTANCED_PROP(float, _VertexCount)
+    UNITY_DEFINE_INSTANCED_PROP(float, _BoneCount)
     UNITY_DEFINE_INSTANCED_PROP(float, _AnimationSpeed)
     UNITY_DEFINE_INSTANCED_PROP(float, _BakedTextureWidth)
     UNITY_DEFINE_INSTANCED_PROP(float, _BakedTextureHeight)
