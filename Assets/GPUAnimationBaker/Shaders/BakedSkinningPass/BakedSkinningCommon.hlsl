@@ -32,8 +32,10 @@ BakedSkinningAnimationInput CreateBakedSkinningAnimationInput(float3 localPositi
     return input;
 }
 
-// TODO: 行列の分4pxのoffset必要
-float2 CalcBoneUV(int boneIndex)
+// TODO:
+// - 行列の分4pxのoffset必要
+// - 行ごとに0.5pxのoffset必要
+float2 CalcBoneUV(int boneIndex, int matrixColIndex = 0)
 {
         float instancedTimeOffset = UNITY_ACCESS_INSTANCED_PROP(Props, _BakedAnimationTimeOffset);
     
@@ -81,6 +83,16 @@ float3 GetBakedAnimationPositionOS(BakedSkinningAnimationInput input)
 {
     float boneUV0 = CalcBoneUV(input.boneIndex0);
     float boneUV1 = CalcBoneUV(input.boneIndex1);
+    float4 bone0Col0 = tex2Dlod(_BakedBonesMap, boneUV0 + 0);
+    float4 bone0Col1 = tex2Dlod(_BakedBonesMap, boneUV0 + 1);
+    float4 bone0Col2 = tex2Dlod(_BakedBonesMap, boneUV0 + 2);
+    float4 bone0Col3 = tex2Dlod(_BakedBonesMap, boneUV0 + 3);
+    float4 bone1Col0 = tex2Dlod(_BakedBonesMap, boneUV1 + 0);
+    float4 bone1Col1 = tex2Dlod(_BakedBonesMap, boneUV1 + 1);
+    float4 bone1Col2 = tex2Dlod(_BakedBonesMap, boneUV1 + 2);
+    float4 bone1Col3 = tex2Dlod(_BakedBonesMap, boneUV1 + 3);
+    float bone0Mat = float4x4(bone0Col0, bone0Col1, bone0Col2, bone0Col3);
+    float bone1Mat = float4x4(bone1Col0, bone1Col1, bone1Col2, bone1Col3);
     return input.localPosition;
 }
 
