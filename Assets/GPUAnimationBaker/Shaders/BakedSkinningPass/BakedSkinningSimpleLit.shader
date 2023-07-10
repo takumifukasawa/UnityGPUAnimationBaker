@@ -17,8 +17,7 @@ Shader "Universal Render Pipeline/Baked Skinning Simple Lit"
         // _CustomColor("Custom Color", Color) = (1, 1, 1, 1)
         // _BakedPositionMap("Baked Position Map", 2D) = "white" {}
         // _BakedNormalMap("Baked Normal Map", 2D) = "white" {}
-        _BakedNormalMap("Baked Bones Map", 2D) = "white" {}
- 
+        _BakedBonesMap("Baked Bones Map", 2D) = "white" {}
         // NOTE: 一旦tangent消してみる
         // _BakedTangentMap("Baked Tangent Map", 2D) = "white" {}
  

@@ -20,12 +20,12 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _BakedNormalMap:
+    - _BakedBonesMap:
         m_Texture: {fileID: 2800000, guid: aab2eb2ede3fc4707bfe6786cebd6cce, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _BakedPositionMap:
-        m_Texture: {fileID: 0}
+    - _BakedNormalMap:
+        m_Texture: {fileID: 2800000, guid: aab2eb2ede3fc4707bfe6786cebd6cce, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:

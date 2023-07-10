@@ -55,6 +55,9 @@ namespace GPUAnimationBaker
 
             // for debug
             // SetColor(Color.white);
+           
+            // for debug
+            PlayAnimation(0);
         }
 
         /// <summary>
@@ -66,7 +69,7 @@ namespace GPUAnimationBaker
             {
                 return;
             }
-
+            
             // _meshRenderer.GetPropertyBlock(_materialPropertyBlock);
             // _materialPropertyBlock.SetFloat("_VertexCount", (float)_gpuAnimationDataScriptableObject.VertexCount);
             // _materialPropertyBlock.SetFloat("_AnimationSpeed", _animationSpeed);
@@ -80,8 +83,9 @@ namespace GPUAnimationBaker
             // _materialPropertyBlock.SetFloat("_BakedTextureHeight", (float)_gpuAnimationDataScriptableObject.TextureHeight);
             // // Debug.Log(_gpuAnimationDataScriptableObject.TotalDuration);
             // _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
-
-            _materialInstance.SetFloat("_VertexCount", (float)_gpuAnimationDataScriptableObject.VertexCount);
+            
+            // _materialInstance.SetFloat("_VertexCount", (float)_gpuAnimationDataScriptableObject.VertexCount);
+            _materialInstance.SetFloat("_BoneCount", _gpuAnimationDataScriptableObject.BoneCount);
             _materialInstance.SetFloat("_AnimationSpeed", _animationSpeed);
             _materialInstance.SetFloat("_BakedAnimationTimeOffset", _animationOffset);
             _materialInstance.SetFloat("_BakedAnimationFPS", (float)_gpuAnimationDataScriptableObject.FPS);

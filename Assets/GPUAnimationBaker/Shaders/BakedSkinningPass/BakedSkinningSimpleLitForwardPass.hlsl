@@ -56,6 +56,8 @@ struct Varyings
     // #else
     //     half3  normalWS                : TEXCOORD2;
     // #endif
+
+    float4 boneWeights              : TEXCOORD3;
     
     // ------------------------------------------------------------
     // CUSTOM_LINE_END
@@ -184,6 +186,9 @@ Varyings LitPassVertexSimple(Attributes input)
     VertexNormalInputs normalInput = GetVertexNormalInputs(bakedSkinningNormalOS, bakedSkinningTangentOS);
 
     // output.animationUV = bakedSkinningAnimationInput.animationUV;
+    output.boneWeights = input.texcoord3;
+    // float2 d = CalcBoneUV(input.texcoord3.y, 0);
+    // output.boneWeights = float4(d, 1., 1.);
 
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
@@ -260,6 +265,7 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
 
+    _CustomColor = float4(1., 1., 1., 1.);
     half4 instancedCustomColor = UNITY_ACCESS_INSTANCED_PROP(Props, _CustomColor);
     _BaseColor *= instancedCustomColor;
 
@@ -281,6 +287,17 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     half4 color = UniversalFragmentBlinnPhong(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     color.a = OutputAlpha(color.a, _Surface);
+
+    // float2 d = CalcBoneUV(input.boneWeights.x, 0.);
+    // color.rgba = half4(input.boneWeights.w, 0, 0, 1);
+    // color.rgba = half4(d.y * 128., 0, 0, 1);
+    // color.rgba = half4(1, 0, 0, 1);
+
+    // float4 l = tex2Dlod(_BakedBonesMap, float4(d, 0, 0));
+    // float4 l = tex2D(_BakedBonesMap, float2(.1, .1));
+    // float4 l = tex2D(_BakedBonesMap, input.uv);
+    // color.rgba = half4(l.xyz, 1.);
+     
 
     return color;
 }

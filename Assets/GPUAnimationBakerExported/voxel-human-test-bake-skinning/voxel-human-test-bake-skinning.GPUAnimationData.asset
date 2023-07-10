@@ -18,6 +18,7 @@ MonoBehaviour:
   TextureWidth: 128
   TextureHeight: 64
   VertexCount: 144
+  BoneCount: 23
   GPUAnimationFrames:
   - AnimationName: Run
     Frames: 12
