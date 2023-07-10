@@ -583,16 +583,22 @@ namespace GPUAnimationBaker
             for (int i = 0; i < bones.Length; i++)
             {
                 var bone = bones[i];
-                Matrix4x4 resultMatrix = Matrix4x4.TRS(bone.localPosition, bone.localRotation, bone.localScale);
-                InternalCalculateBonePoseMatrix(bone, ref resultMatrix);
-                // Debug.Log("result mat");
-                // Debug.Log(resultMatrix);
-                resultMatrix = resultMatrix * boneOffsetMatrices[i];
-                // Debug.Log("result mat * bone offset");
-                // Debug.Log(resultMatrix);
-                // var mat = InternalCalculateBonePoseMatrix(bone, ref resultMatrix);
-                // var mat = bone.localToWorldMatrix;
-                // var mat = Matrix4x4.TRS(bone.position, bone.rotation, bone.lossyScale);
+
+                // 1. boneの localmatrix をかけてくパターン
+                // Matrix4x4 resultMatrix = Matrix4x4.TRS(bone.localPosition, bone.localRotation, bone.localScale);
+                // InternalCalculateBonePoseMatrix(bone, ref resultMatrix);
+                // // Debug.Log("result mat");
+                // // Debug.Log(resultMatrix);
+                // resultMatrix = resultMatrix * boneOffsetMatrices[i];
+                // // Debug.Log("result mat * bone offset");
+                // // Debug.Log(resultMatrix);
+                // // var mat = InternalCalculateBonePoseMatrix(bone, ref resultMatrix);
+                // // var mat = bone.localToWorldMatrix;
+                // // var mat = Matrix4x4.TRS(bone.position, bone.rotation, bone.lossyScale);
+
+                // 2. bone world matrix * bone offset matrix
+                var resultMatrix = bone.localToWorldMatrix * boneOffsetMatrices[i];
+
                 bonePoseMatrices.Add(resultMatrix);
             }
 
