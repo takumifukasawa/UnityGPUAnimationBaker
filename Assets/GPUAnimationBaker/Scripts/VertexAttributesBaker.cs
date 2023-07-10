@@ -475,10 +475,15 @@ namespace GPUAnimationBaker
         {
             TextureFormat format = TextureFormat.RGBAHalf;
             Texture2D texture = new Texture2D(rt.width, rt.height, format, false);
+            
+            // st wrap mode
             texture.wrapMode = TextureWrapMode.Clamp;
 
+            // sets filter mode
             texture.filterMode = FilterMode.Point;
-            // texture.filterMode = FilterMode.Bilinear;
+
+            // set anisotropy
+            texture.anisoLevel = 0;
 
             Rect rect = Rect.MinMaxRect(0f, 0f, texture.width, texture.height);
             RenderTexture tmp = RenderTexture.active;

@@ -653,5 +653,5 @@ Shader "Universal Render Pipeline/Baked Skinning Simple Lit"
     }
 
     Fallback  "Hidden/Universal Render Pipeline/FallbackError"
-    // CustomEditor "UnityEditor.Rendering.Universal.ShaderGUI.SimpleLitShader"
+    CustomEditor "UnityEditor.Rendering.Universal.ShaderGUI.SimpleLitShader"
 }

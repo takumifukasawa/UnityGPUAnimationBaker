@@ -133,7 +133,14 @@ float3 GetBakedAnimationPositionOS(BakedSkinningAnimationInput input)
     float4x4 bone0Mat = float4x4(bone0Col0, bone0Col1, bone0Col2, bone0Col3);
     float4x4 bone1Mat = float4x4(bone1Col0, bone1Col1, bone1Col2, bone1Col3);
     // blend
-    float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * input.boneWeight1;
+    // float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * input.boneWeight1;
+    // float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * 0;
+    float4x4 boneMat = float4x4(
+        lerp(bone0Col0, bone1Col0, input.boneWeight0 / 1),
+        lerp(bone0Col1, bone1Col1, input.boneWeight0 / 1),
+        lerp(bone0Col2, bone1Col2, input.boneWeight0 / 1),
+        float4(0, 0, 0, 1)
+    );
     
     return mul(bone0Mat, float4(input.localPosition, 1.)).xyz;
     // return mul(boneMat, float4(input.localPosition, 1.)).xyz;
