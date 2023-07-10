@@ -297,6 +297,7 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     // float4 l = tex2D(_BakedBonesMap, float2(.1, .1));
     // float4 l = tex2D(_BakedBonesMap, input.uv);
     // color.rgba = half4(l.xyz, 1.);
+    color.rgba = half4(input.uv, 1, 1.);
      
 
     return color;
