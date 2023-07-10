@@ -527,22 +527,22 @@ namespace GPUAnimationBaker
                 // index: 0
                 packedBoneWeight.x = verticesBoneWeights[vertexIndex][0].boneIndex;
                 packedBoneWeight.y = verticesBoneWeights[vertexIndex][0].weight;
-                Debug.Log($"bone -  vertex index: {vertexIndex}, bone index: {packedBoneWeight.x}, weight: {packedBoneWeight.y}");
-                var accWeight = 0f;
-                accWeight += packedBoneWeight.y;
+                // Debug.Log($"bone -  vertex index: {vertexIndex}, bone index: {packedBoneWeight.x}, weight: {packedBoneWeight.y}");
+                // var accWeight = 0f;
+                // accWeight += packedBoneWeight.y;
                 // index: 1
                 if (verticesBoneWeights[vertexIndex].Count >= 2)
                 {
                     packedBoneWeight.z = verticesBoneWeights[vertexIndex][1].boneIndex;
                     packedBoneWeight.w = verticesBoneWeights[vertexIndex][1].weight;
-                    Debug.Log($"bone -  vertex index: {vertexIndex}, bone index: {packedBoneWeight.z}, weight: {packedBoneWeight.w}");
-                    accWeight += packedBoneWeight.w;
+                    // Debug.Log($"bone -  vertex index: {vertexIndex}, bone index: {packedBoneWeight.z}, weight: {packedBoneWeight.w}");
+                    // accWeight += packedBoneWeight.w;
                 }
-                Debug.Log($"acc weight: {accWeight}");
-                if (accWeight < 0.95f)
-                {
-                    Debug.LogWarning("invalid weight");
-                }
+                // Debug.Log($"acc weight: {accWeight}");
+                // if (accWeight < 0.95f)
+                // {
+                //     Debug.LogWarning("invalid weight");
+                // }
 
                 packedVerticesBoneWeights.Add(packedBoneWeight);
             }
