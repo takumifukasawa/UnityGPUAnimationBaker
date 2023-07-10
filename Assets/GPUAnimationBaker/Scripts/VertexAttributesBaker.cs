@@ -38,18 +38,37 @@ namespace GPUAnimationBaker
             _memoryMesh = new Mesh();
         }
 
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="vertexIndex"></param>
         // tmp
         // public void MemoryVertexAttributes(int vertexIndex)
-        public void MemoryBoneAttributes(int boneIndex)
+        public void MemoryAllBoneAttributes()
         {
             _skinnedMeshRenderer.BakeMesh(_memoryMesh);
 
-            var m = _skinnedMeshRenderer.bones[boneIndex].localToWorldMatrix;
+            var boneOffsetMatrices = GetBoneOffsetMatrices(_skinnedMeshRenderer);
+            var bones = _skinnedMeshRenderer.bones;
+            var poseMatrices = CalculateBonePoseMatrices(bones, boneOffsetMatrices);
+            // var m = _skinnedMeshRenderer.bones[boneIndex].localToWorldMatrix;
 
+            for (int i = 0; i < _skinnedMeshRenderer.bones.Length; i++)
+            {
+                MemoryBoneAttributes(poseMatrices[i]);
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertexIndex"></param>
+        // tmp
+        // public void MemoryVertexAttributes(int vertexIndex)
+        void MemoryBoneAttributes(Matrix4x4 m)
+        {
             BoneAttributes vertexAttributes = new BoneAttributes(
                 new Vector4(m.m00, m.m01, m.m02, m.m03),
                 new Vector4(m.m10, m.m11, m.m12, m.m13),
@@ -290,15 +309,6 @@ namespace GPUAnimationBaker
             return rt;
         }
 
-        /// <summary>
-        /// 全てのボーンにおける、ボーンごとの初期姿勢行列の逆行列
-        /// 初期姿勢において、ローカル座標の原点に合わせる役割
-        /// </summary>
-        /// <returns></returns>
-        static Matrix4x4[] GetBoneOffsetMatrices(SkinnedMeshRenderer skinnedMeshRenderer)
-        {
-            return skinnedMeshRenderer.sharedMesh.bindposes;
-        }
 
         // /// <summary>
         // /// とある時点での全てのボーンにおける、ボーンごとの姿勢行列
@@ -415,45 +425,45 @@ namespace GPUAnimationBaker
             return verticesBoneWeights;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        void GetBoneWeights()
-        {
-            int vertexCount = _skinnedMeshRenderer.sharedMesh.vertexCount;
-            var boneWeights = _skinnedMeshRenderer.sharedMesh.GetAllBoneWeights();
-            var bonesPerVertex = _skinnedMeshRenderer.sharedMesh.GetBonesPerVertex();
+        // /// <summary>
+        // /// 
+        // /// </summary>
+        // void GetBoneWeights()
+        // {
+        //     int vertexCount = _skinnedMeshRenderer.sharedMesh.vertexCount;
+        //     var boneWeights = _skinnedMeshRenderer.sharedMesh.GetAllBoneWeights();
+        //     var bonesPerVertex = _skinnedMeshRenderer.sharedMesh.GetBonesPerVertex();
 
-            Debug.Log("-------------------");
-            Debug.Log(_skinnedMeshRenderer.bones);
-            Debug.Log($"bone count: {_skinnedMeshRenderer.bones.Length}");
-            Debug.Log(_skinnedMeshRenderer.sharedMesh.bindposes);
-            Debug.Log($"bind pose count: {_skinnedMeshRenderer.sharedMesh.bindposes.Length}");
+        //     Debug.Log("-------------------");
+        //     Debug.Log(_skinnedMeshRenderer.bones);
+        //     Debug.Log($"bone count: {_skinnedMeshRenderer.bones.Length}");
+        //     Debug.Log(_skinnedMeshRenderer.sharedMesh.bindposes);
+        //     Debug.Log($"bind pose count: {_skinnedMeshRenderer.sharedMesh.bindposes.Length}");
 
-            var boneWeightIndex = 0;
-            for (var vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
-            {
-                var totalWeight = 0f;
-                var numberOfBonesForThisVertex = bonesPerVertex[vertexIndex];
-                Debug.Log($"vertex index: {vertexIndex}, influence bone num: {numberOfBonesForThisVertex}");
-                for (var i = 0; i < numberOfBonesForThisVertex; i++)
-                {
-                    var currentBoneWeight = boneWeights[boneWeightIndex];
-                    totalWeight += currentBoneWeight.weight;
-                    Debug.Log($"vertex index: {vertexIndex}, influence bone index: {currentBoneWeight.boneIndex}, bone weight: {currentBoneWeight.weight}");
-                    if (i > 0)
-                    {
-                        Debug.Assert(boneWeights[boneWeightIndex - 1].weight != currentBoneWeight.weight);
-                    }
+        //     var boneWeightIndex = 0;
+        //     for (var vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
+        //     {
+        //         var totalWeight = 0f;
+        //         var numberOfBonesForThisVertex = bonesPerVertex[vertexIndex];
+        //         Debug.Log($"vertex index: {vertexIndex}, influence bone num: {numberOfBonesForThisVertex}");
+        //         for (var i = 0; i < numberOfBonesForThisVertex; i++)
+        //         {
+        //             var currentBoneWeight = boneWeights[boneWeightIndex];
+        //             totalWeight += currentBoneWeight.weight;
+        //             Debug.Log($"vertex index: {vertexIndex}, influence bone index: {currentBoneWeight.boneIndex}, bone weight: {currentBoneWeight.weight}");
+        //             if (i > 0)
+        //             {
+        //                 Debug.Assert(boneWeights[boneWeightIndex - 1].weight != currentBoneWeight.weight);
+        //             }
 
-                    boneWeightIndex++;
-                }
+        //             boneWeightIndex++;
+        //         }
 
-                Debug.Assert(Mathf.Approximately(1f, totalWeight));
-            }
+        //         Debug.Assert(Mathf.Approximately(1f, totalWeight));
+        //     }
 
-            Debug.Log("-------------------");
-        }
+        //     Debug.Log("-------------------");
+        // }
 
         /// <summary>
         /// 
@@ -553,32 +563,64 @@ namespace GPUAnimationBaker
         }
 
         /// <summary>
-        /// 
+        /// 全てのボーンにおける、ボーンごとの初期姿勢行列の逆行列
+        /// 初期姿勢において、ローカル座標の原点に合わせる役割
+        /// </summary>
+        /// <returns></returns>
+        static Matrix4x4[] GetBoneOffsetMatrices(SkinnedMeshRenderer skinnedMeshRenderer)
+        {
+            return skinnedMeshRenderer.sharedMesh.bindposes;
+        }
+
+        /// <summary>
+        /// すべてのボーンにおける、ボーンオフセット行列を踏まえたボーンの姿勢行列
         /// </summary>
         /// <param name="bones"></param>
         /// <returns></returns>
-        private static List<Matrix4x4> CalculateBonePoseMatrices(Transform[] bones)
+        private static List<Matrix4x4> CalculateBonePoseMatrices(Transform[] bones, Matrix4x4[] boneOffsetMatrices)
         {
             var bonePoseMatrices = new List<Matrix4x4>();
             for (int i = 0; i < bones.Length; i++)
             {
-                // var bone = bones[i];
-                // var mat = InternalCalculateBonePoseMatrix(bone);
-                bonePoseMatrices.Add(bones[i].localToWorldMatrix);
+                var bone = bones[i];
+                Matrix4x4 resultMatrix = Matrix4x4.TRS(bone.localPosition, bone.localRotation, bone.localScale);
+                InternalCalculateBonePoseMatrix(bone, ref resultMatrix);
+                // Debug.Log("result mat");
+                // Debug.Log(resultMatrix);
+                resultMatrix = resultMatrix * boneOffsetMatrices[i];
+                // Debug.Log("result mat * bone offset");
+                // Debug.Log(resultMatrix);
+                // var mat = InternalCalculateBonePoseMatrix(bone, ref resultMatrix);
+                // var mat = bone.localToWorldMatrix;
+                // var mat = Matrix4x4.TRS(bone.position, bone.rotation, bone.lossyScale);
+                bonePoseMatrices.Add(resultMatrix);
             }
 
             return bonePoseMatrices;
         }
 
-        // private static Matrix4x4 InternalCalculateBonePoseMatrix(Transform bone)
-        // {
-        //     var resultMatrix = Matrix4x4.identity;
-        //     resultMatrix = bone.localToWorldMatrix;
-        //     if (!bone.parent)
-        //     {
-        //         return resultMatrix;
-        //     }
-        // }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bone"></param>
+        /// <returns></returns>
+        private static void InternalCalculateBonePoseMatrix(Transform targetBone, ref Matrix4x4 resultMatrix)
+        {
+            // Debug.Log($"target bone: {targetBone}, has parent bone: {!!targetBone.parent}");
+            // Debug.Log(resultMatrix);
+            if (!targetBone.parent)
+            {
+                return;
+            }
+
+            resultMatrix = resultMatrix * Matrix4x4.TRS(
+                               targetBone.parent.localPosition,
+                               targetBone.parent.localRotation,
+                               targetBone.parent.localScale
+                           );
+            // Debug.Log(resultMatrix);
+            InternalCalculateBonePoseMatrix(targetBone.parent, ref resultMatrix);
+        }
 
         /// <summary>
         /// 

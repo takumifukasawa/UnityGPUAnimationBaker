@@ -30,6 +30,11 @@ namespace GPUAnimationBaker
         [SerializeField]
         private int _uvChannel = 1;
 
+        [Space(13)]
+        
+        [SerializeField]
+        private bool _dryRun;
+
         // ----------------------------------------------------------------------------------
         // public
         // ----------------------------------------------------------------------------------
@@ -91,11 +96,13 @@ namespace GPUAnimationBaker
                     //     int vertexIndex = j;
                     //     _baker.MemoryVertexAttributes(vertexIndex);
                     // }
-                    for (int j = 0; j < skinnedMeshRenderer.bones.Length; j++)
-                    {
-                        int boneIndex = j;
-                        _baker.MemoryBoneAttributes(boneIndex);
-                    }
+                    // default
+                    // for (int j = 0; j < skinnedMeshRenderer.bones.Length; j++)
+                    // {
+                    //     int boneIndex = j;
+                    //     _baker.MemoryBoneAttributes(boneIndex);
+                    // }
+                    _baker.MemoryAllBoneAttributes();
                 }
             } // end foreach
 
@@ -105,7 +112,11 @@ namespace GPUAnimationBaker
                 totalFrames,
                 _uvChannel
             );
-            _baker.SaveAssets(gameObject.name, _runtimeShader, _animationFps, totalDuration, totalFrames);
+            if (!_dryRun)
+            {
+                _baker.SaveAssets(gameObject.name, _runtimeShader, _animationFps, totalDuration, totalFrames);
+            }
+
             _baker.Dispose();
 #endif
 

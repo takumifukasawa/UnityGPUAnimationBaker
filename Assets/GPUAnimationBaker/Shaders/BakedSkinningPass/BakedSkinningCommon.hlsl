@@ -105,12 +105,12 @@ float3 GetBakedAnimationPositionOS(BakedSkinningAnimationInput input)
     float2 boneUV00 = CalcBoneUV(input.boneIndex0, 0);
     float2 boneUV01 = CalcBoneUV(input.boneIndex0, 1);
     float2 boneUV02 = CalcBoneUV(input.boneIndex0, 2);
-    float2 boneUV03 = CalcBoneUV(input.boneIndex0, 3);
+    // float2 boneUV03 = CalcBoneUV(input.boneIndex0, 3);
     
     float2 boneUV10 = CalcBoneUV(input.boneIndex1, 0);
     float2 boneUV11 = CalcBoneUV(input.boneIndex1, 1);
     float2 boneUV12 = CalcBoneUV(input.boneIndex1, 2);
-    float2 boneUV13 = CalcBoneUV(input.boneIndex1, 3);
+    // float2 boneUV13 = CalcBoneUV(input.boneIndex1, 3);
     
     float4 bone0Col0 = tex2Dlod(_BakedBonesMap, float4(boneUV00, 0, 0));
     float4 bone0Col1 = tex2Dlod(_BakedBonesMap, float4(boneUV01, 0, 0));
