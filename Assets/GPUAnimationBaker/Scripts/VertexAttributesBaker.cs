@@ -224,6 +224,7 @@ namespace GPUAnimationBaker
             GameObject staticMeshGameObject = new GameObject(name);
 
             staticMeshGameObject.AddComponent<MeshRenderer>().sharedMaterial = runtimeMaterial;
+            // staticMeshGameObject.AddComponent<MeshRenderer>().materials[0] = runtimeMaterial;
 
             staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = _runtimeMesh;
 

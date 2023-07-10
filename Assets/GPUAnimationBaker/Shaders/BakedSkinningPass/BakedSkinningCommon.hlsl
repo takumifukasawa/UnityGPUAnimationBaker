@@ -135,8 +135,8 @@ float3 GetBakedAnimationPositionOS(BakedSkinningAnimationInput input)
     // blend
     float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * input.boneWeight1;
     
-    // return mul(bone1Mat, float4(input.localPosition, 1.)).xyz;
-    return mul(boneMat, float4(input.localPosition, 1.)).xyz;
+    return mul(bone0Mat, float4(input.localPosition, 1.)).xyz;
+    // return mul(boneMat, float4(input.localPosition, 1.)).xyz;
     // debug
     // return input.localPosition;
 }
