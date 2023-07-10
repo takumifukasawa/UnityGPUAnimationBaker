@@ -527,7 +527,7 @@ namespace GPUAnimationBaker
             List<Vector4> packedVerticesBoneWeights = new List<Vector4>();
             for (int vertexIndex = 0; vertexIndex < verticesBoneWeights.Count; vertexIndex++)
             {
-                var packedBoneWeight = new Vector4();
+                var packedBoneWeight = Vector4.zero;
                 // 一旦影響するボーンは2つまで
                 // TODO: 4つまで影響させたい
                 // index: 0
