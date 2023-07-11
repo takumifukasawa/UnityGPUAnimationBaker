@@ -27,7 +27,7 @@ namespace GPUAnimationBaker
         [Space(13)]
         [ReadOnly, SerializeField]
         private GPUAnimationDataScriptableObject _gpuAnimationDataScriptableObject;
-        
+
         [SerializeField, HideInInspector]
         private int _currentGPUAnimationFrameIndex = 0;
 
@@ -60,7 +60,8 @@ namespace GPUAnimationBaker
             }
 
             UpdateFrameInfo(_gpuAnimationDataScriptableObject.GPUAnimationFrames[_currentGPUAnimationFrameIndex]);
-            
+            PlayAnimation(_currentGPUAnimationFrameIndex);
+
             // for debug
             // Debug.Log(string.Format(
             //     "[GPUAnimationController] current animation data - initial frame: {0}, duration: {1}, vertex count: {2}, texture width {3}, texture height {4}",
@@ -70,17 +71,12 @@ namespace GPUAnimationBaker
             //     _gpuAnimationDataScriptableObject.TextureWidth,
             //     _gpuAnimationDataScriptableObject.TextureHeight
             // ));
-
-            UpdateColor();
-
-            // for debug
-            PlayAnimation(0);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        void FixedUpdate()
+        void Update()
         {
             if (!_isRuntime || _gpuAnimationDataScriptableObject == null)
             {
@@ -100,6 +96,7 @@ namespace GPUAnimationBaker
                 _materialPropertyBlock.SetFloat("_BakedCurrentAnimationFrames", _currentGPUAnimationFrameInfo.Frames);
                 _materialPropertyBlock.SetFloat("_BakedTextureWidth", (float)_gpuAnimationDataScriptableObject.TextureWidth);
                 _materialPropertyBlock.SetFloat("_BakedTextureHeight", (float)_gpuAnimationDataScriptableObject.TextureHeight);
+                _materialPropertyBlock.SetColor("_CustomColor", _instanceBaseColor);
                 _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
             }
             else
@@ -115,6 +112,7 @@ namespace GPUAnimationBaker
                 _materialInstance.SetFloat("_BakedCurrentAnimationFrames", _currentGPUAnimationFrameInfo.Frames);
                 _materialInstance.SetFloat("_BakedTextureWidth", (float)_gpuAnimationDataScriptableObject.TextureWidth);
                 _materialInstance.SetFloat("_BakedTextureHeight", (float)_gpuAnimationDataScriptableObject.TextureHeight);
+                _materialInstance.SetColor("_CustomColor", _instanceBaseColor);
                 // Debug.Log(_gpuAnimationDataScriptableObject.TotalDuration);
             }
         }
@@ -225,33 +223,6 @@ namespace GPUAnimationBaker
         public void SetAnimationData(GPUAnimationDataScriptableObject data)
         {
             _gpuAnimationDataScriptableObject = data;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="color"></param>
-        void UpdateColor()
-        {
-            // if (_materialPropertyBlock == null)
-            // {
-            //     _materialPropertyBlock = new MaterialPropertyBlock();
-            // }
-
-            // _meshRenderer.GetPropertyBlock(_materialPropertyBlock);
-            // _materialPropertyBlock.SetColor("_CustomColor", color);
-            // _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
-
-            if (_enabledGPUInstancing)
-            {
-                _meshRenderer.GetPropertyBlock(_materialPropertyBlock);
-                _materialPropertyBlock.SetColor("_CustomColor", _instanceBaseColor);
-                _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
-            }
-            else
-            {
-                _materialInstance.SetColor("_CustomColor", _instanceBaseColor);
-            }
         }
 
         // ----------------------------------------------------------------------------------
