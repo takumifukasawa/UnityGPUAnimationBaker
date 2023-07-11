@@ -65,7 +65,7 @@ float4 GetShadowPositionHClip(Attributes input)
         bakedSkinningAnimationInput.boneWeights
     );
     float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(input.positionOS, bakedSkinMatrix);
-    float4 bakedSkinningNormalOS = GetBakedAnimationNormalOS(input.positionOS, bakedSkinMatrix);
+    float3 bakedSkinningNormalOS = GetBakedAnimationNormalOS(input.positionOS, bakedSkinMatrix);
 
     float3 positionWS = TransformObjectToWorld(bakedSkinningPositionOS);
     float3 normalWS = TransformObjectToWorldNormal(bakedSkinningNormalOS);

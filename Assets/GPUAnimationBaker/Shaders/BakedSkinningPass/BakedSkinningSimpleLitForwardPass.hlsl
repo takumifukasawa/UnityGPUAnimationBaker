@@ -185,7 +185,7 @@ Varyings LitPassVertexSimple(Attributes input)
         bakedSkinningAnimationInput.boneWeights
     );
     float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(input.positionOS, bakedSkinMatrix);
-    float4 bakedSkinningNormalOS = GetBakedAnimationNormalOS(input.normalOS, bakedSkinMatrix);
+    float3 bakedSkinningNormalOS = GetBakedAnimationNormalOS(input.normalOS, bakedSkinMatrix);
     float4 bakedSkinningTangentOS = GetBakedAnimationTangentOS(bakedSkinningAnimationInput, bakedSkinMatrix);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(bakedSkinningPositionOS);
@@ -294,7 +294,7 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     color.a = OutputAlpha(color.a, _Surface);
 
-    float2 d = CalcBoneUV(input.boneWeights.x, 0.);
+    // float2 d = CalcBoneUV(input.boneWeights.x, 0.);
     // color.rgba = half4(input.boneWeights.w, 0, 0, 1);
     // color.rgba = half4(d.y * 128., 0, 0, 1);
     // color.rgba = half4(1, 0, 0, 1);
@@ -304,7 +304,7 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     // float4 l = tex2D(_BakedBonesMap, input.uv);
     // color.rgba = half4(l.xyz, 1.);
     // color.rgba = half4(input.boneWeights.www, 1.);
-    // color.rgba = half4(d, 1, 1.);
+    // color.rgba = half4(input.uv, 1, 1.);
 
 
     return color;

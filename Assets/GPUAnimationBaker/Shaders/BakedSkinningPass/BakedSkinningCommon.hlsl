@@ -139,17 +139,16 @@ float4x4 GetBakedSkinMatrix(
     float4x4 bone0Mat = float4x4(bone0Col0, bone0Col1, bone0Col2, bone0Col3);
     float4x4 bone1Mat = float4x4(bone1Col0, bone1Col1, bone1Col2, bone1Col3);
     // blend
-    // float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * input.boneWeight1;
-    // float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * 0;
-    float4x4 boneMat = float4x4(
-        lerp(bone0Col0, bone1Col0, boneWeights.x / 1),
-        lerp(bone0Col1, bone1Col1, boneWeights.x / 1),
-        lerp(bone0Col2, bone1Col2, boneWeights.x / 1),
-        float4(0, 0, 0, 1)
-    );
+    float4x4 boneMat = bone0Mat * boneWeights.x + bone1Mat * boneWeights.y;
+    // float4x4 boneMat = float4x4(
+    //     lerp(bone0Col0, bone1Col0, boneWeights.x / 1),
+    //     lerp(bone0Col1, bone1Col1, boneWeights.x / 1),
+    //     lerp(bone0Col2, bone1Col2, boneWeights.x / 1),
+    //     float4(0, 0, 0, 1)
+    // );
 
-    return bone0Mat;
-    // return boneMat;
+    // return bone0Mat;
+    return boneMat;
 
     // return mul(bone0Mat, float4(input.localPosition, 1.)).xyz;
     // return mul(boneMat, float4(input.localPosition, 1.)).xyz;
@@ -208,10 +207,10 @@ float3 GetBakedAnimationPositionOS(float3 localPosition, float4x4 skinMatrix)
     return mul(skinMatrix, float4(localPosition, 1.)).xyz;
 }
 
-float4 GetBakedAnimationNormalOS(float3 localNormal, float4x4 skinMatrix)
+float3 GetBakedAnimationNormalOS(float3 localNormal, float4x4 skinMatrix)
 {
-    // TODO: skinningに合わせて再計算
-    return float4(0, 0, 1, 1);
+    return mul((float3x3)skinMatrix, localNormal);
+    // return float4(0, 0, 1, 1);
     // return tex2Dlod(_BakedNormalMap, input.animationUV);
 }
 
