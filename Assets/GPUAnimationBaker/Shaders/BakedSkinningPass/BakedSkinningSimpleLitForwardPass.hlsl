@@ -11,7 +11,7 @@
 // ------------------------------------------------------------
 // CUSTOM_LINE_BEGIN
 // ------------------------------------------------------------
- 
+
 #include "BakedSkinningCommon.hlsl"
 
 // ------------------------------------------------------------
@@ -20,12 +20,12 @@
 
 struct Attributes
 {
-    float4 positionOS    : POSITION;
-    float3 normalOS      : NORMAL;
-    float4 tangentOS     : TANGENT;
-    float2 texcoord      : TEXCOORD0;
+    float4 positionOS : POSITION;
+    float3 normalOS : NORMAL;
+    float4 tangentOS : TANGENT;
+    float2 texcoord : TEXCOORD0;
     // CUSTOM_LINE_BEGIN
-    float2 texcoord2      : TEXCOORD1;
+    float2 texcoord2 : TEXCOORD1;
     float4 texcoord3 : TEXCOORD2;
     // CUSTOM_LINE_END   
     // ORIGINAL_BEGIN use
@@ -37,17 +37,17 @@ struct Attributes
 
 struct Varyings
 {
-    float2 uv                       : TEXCOORD0;
+    float2 uv : TEXCOORD0;
 
-    float3 positionWS                  : TEXCOORD1;    // xyz: posWS
+    float3 positionWS : TEXCOORD1; // xyz: posWS
 
     // ------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ------------------------------------------------------------
-    
+
     // NOTE: 一旦tangent消してみる
-    half3  normalWS                : TEXCOORD2;
-    
+    half3 normalWS : TEXCOORD2;
+
     // ORIGINAL
     // #ifdef _NORMALMAP
     //     half4 normalWS                 : TEXCOORD2;    // xyz: normal, w: viewDir.x
@@ -57,16 +57,16 @@ struct Varyings
     //     half3  normalWS                : TEXCOORD2;
     // #endif
 
-    float4 boneWeights              : TEXCOORD3;
-    
+    float4 boneWeights : TEXCOORD3;
+
     // ------------------------------------------------------------
     // CUSTOM_LINE_END
     // ------------------------------------------------------------
-    
+
     #ifdef _ADDITIONAL_LIGHTS_VERTEX
         half4 fogFactorAndVertexLight  : TEXCOORD5; // x: fogFactor, yzw: vertex light
     #else
-        half  fogFactor                 : TEXCOORD5;
+    half fogFactor : TEXCOORD5;
     #endif
 
     #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -75,14 +75,14 @@ struct Varyings
     // CUSTOM_LINE_BEGIN
     // float4 animationUV              : TEXCOORD8;
     // CUSTOM_LINE_END
- 
+
     DECLARE_LIGHTMAP_OR_SH(staticLightmapUV, vertexSH, 7);
 
-#ifdef DYNAMICLIGHTMAP_ON
+    #ifdef DYNAMICLIGHTMAP_ON
     float2  dynamicLightmapUV : TEXCOORD8; // Dynamic lightmap UVs
-#endif
+    #endif
 
-    float4 positionCS                  : SV_POSITION;
+    float4 positionCS : SV_POSITION;
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
@@ -92,11 +92,11 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
     inputData = (InputData)0;
 
     inputData.positionWS = input.positionWS;
-    
+
     // ----------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
-    
+
     half3 viewDirWS = GetWorldSpaceNormalizeViewDir(inputData.positionWS);
     inputData.normalWS = input.normalWS;
 
@@ -124,22 +124,22 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
     #elif defined(MAIN_LIGHT_CALCULATE_SHADOWS)
         inputData.shadowCoord = TransformWorldToShadowCoord(inputData.positionWS);
     #else
-        inputData.shadowCoord = float4(0, 0, 0, 0);
+    inputData.shadowCoord = float4(0, 0, 0, 0);
     #endif
 
     #ifdef _ADDITIONAL_LIGHTS_VERTEX
         inputData.fogCoord = InitializeInputDataFog(float4(inputData.positionWS, 1.0), input.fogFactorAndVertexLight.x);
         inputData.vertexLighting = input.fogFactorAndVertexLight.yzw;
     #else
-        inputData.fogCoord = InitializeInputDataFog(float4(inputData.positionWS, 1.0), input.fogFactor);
-        inputData.vertexLighting = half3(0, 0, 0);
+    inputData.fogCoord = InitializeInputDataFog(float4(inputData.positionWS, 1.0), input.fogFactor);
+    inputData.vertexLighting = half3(0, 0, 0);
     #endif
 
-#if defined(DYNAMICLIGHTMAP_ON)
+    #if defined(DYNAMICLIGHTMAP_ON)
     inputData.bakedGI = SAMPLE_GI(input.staticLightmapUV, input.dynamicLightmapUV, input.vertexSH, inputData.normalWS);
-#else
+    #else
     inputData.bakedGI = SAMPLE_GI(input.staticLightmapUV, input.vertexSH, inputData.normalWS);
-#endif
+    #endif
 
     inputData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(input.positionCS);
     inputData.shadowMask = SAMPLE_SHADOWMASK(input.staticLightmapUV);
@@ -168,7 +168,7 @@ Varyings LitPassVertexSimple(Attributes input)
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
-    
+
     // ----------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
@@ -177,13 +177,15 @@ Varyings LitPassVertexSimple(Attributes input)
     // VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     // VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
 
-    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.positionOS.xyz, input.texcoord3);
+    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(
+        input.texcoord3
+    );
     float4x4 bakedSkinMatrix = GetBakedSkinMatrix(
         bakedSkinningAnimationInput.boneIndices,
         bakedSkinningAnimationInput.boneWeights
     );
-    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput, bakedSkinMatrix);
-    float4 bakedSkinningNormalOS = GetBakedAnimationNormalOS(bakedSkinningAnimationInput, bakedSkinMatrix);
+    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(input.positionOS, bakedSkinMatrix);
+    float4 bakedSkinningNormalOS = GetBakedAnimationNormalOS(input.normalOS, bakedSkinMatrix);
     float4 bakedSkinningTangentOS = GetBakedAnimationTangentOS(bakedSkinningAnimationInput, bakedSkinMatrix);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(bakedSkinningPositionOS);
@@ -201,24 +203,24 @@ Varyings LitPassVertexSimple(Attributes input)
     // ----------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
-    
+
     // VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     // VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
 
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
     // ----------------------------------------------------------------
-    
-#if defined(_FOG_FRAGMENT)
-        half fogFactor = 0;
-#else
+
+    #if defined(_FOG_FRAGMENT)
+    half fogFactor = 0;
+    #else
         half fogFactor = ComputeFogFactor(vertexInput.positionCS.z);
-#endif
+    #endif
 
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     output.positionWS.xyz = vertexInput.positionWS;
     output.positionCS = vertexInput.positionCS;
-    
+
     // ----------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
@@ -226,30 +228,30 @@ Varyings LitPassVertexSimple(Attributes input)
     output.normalWS = NormalizeNormalPerVertex(normalInput.normalWS);
 
     // ORIGINAL
-// #ifdef _NORMALMAP
-//     half3 viewDirWS = GetWorldSpaceViewDir(vertexInput.positionWS);
-//     output.normalWS = half4(normalInput.normalWS, viewDirWS.x);
-//     output.tangentWS = half4(normalInput.tangentWS, viewDirWS.y);
-//     output.bitangentWS = half4(normalInput.bitangentWS, viewDirWS.z);
-// #else
-//     output.normalWS = NormalizeNormalPerVertex(normalInput.normalWS);
-// #endif
-    
+    // #ifdef _NORMALMAP
+    //     half3 viewDirWS = GetWorldSpaceViewDir(vertexInput.positionWS);
+    //     output.normalWS = half4(normalInput.normalWS, viewDirWS.x);
+    //     output.tangentWS = half4(normalInput.tangentWS, viewDirWS.y);
+    //     output.bitangentWS = half4(normalInput.bitangentWS, viewDirWS.z);
+    // #else
+    //     output.normalWS = NormalizeNormalPerVertex(normalInput.normalWS);
+    // #endif
+
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
     // ----------------------------------------------------------------
 
     OUTPUT_LIGHTMAP_UV(input.staticLightmapUV, unity_LightmapST, output.staticLightmapUV);
-#ifdef DYNAMICLIGHTMAP_ON
+    #ifdef DYNAMICLIGHTMAP_ON
     output.dynamicLightmapUV = input.dynamicLightmapUV.xy * unity_DynamicLightmapST.xy + unity_DynamicLightmapST.zw;
-#endif
+    #endif
     OUTPUT_SH(output.normalWS.xyz, output.vertexSH);
 
     #ifdef _ADDITIONAL_LIGHTS_VERTEX
         half3 vertexLight = VertexLighting(vertexInput.positionWS, normalInput.normalWS);
         output.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
     #else
-        output.fogFactor = fogFactor;
+    output.fogFactor = fogFactor;
     #endif
 
     #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
@@ -284,9 +286,9 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     InitializeInputData(input, surfaceData.normalTS, inputData);
     SETUP_DEBUG_TEXTURE_DATA(inputData, input.uv, _BaseMap);
 
-#ifdef _DBUFFER
+    #ifdef _DBUFFER
     ApplyDecalToSurfaceData(input.positionCS, surfaceData, inputData);
-#endif
+    #endif
 
     half4 color = UniversalFragmentBlinnPhong(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
@@ -303,7 +305,7 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     // color.rgba = half4(l.xyz, 1.);
     // color.rgba = half4(input.boneWeights.www, 1.);
     // color.rgba = half4(d, 1, 1.);
-     
+
 
     return color;
 }

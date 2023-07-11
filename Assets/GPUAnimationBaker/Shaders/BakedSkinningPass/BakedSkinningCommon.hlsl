@@ -12,16 +12,22 @@ struct BakedSkinningAnimationInput
 {
     // float instancedTimeOffset;
     // float4 animationUV;
-    float3 localPosition;
+    // float3 localPosition;
+    // float3 localNormal;
     float4 boneIndices;
     float4 boneWeights;
 };
 
-BakedSkinningAnimationInput CreateBakedSkinningAnimationInput(float3 localPosition, float4 boneWeights)
+BakedSkinningAnimationInput CreateBakedSkinningAnimationInput(
+    // float3 localPosition,
+    // float3 localNormal,
+    float4 boneWeights
+)
 {
     BakedSkinningAnimationInput input;
 
-    input.localPosition = localPosition;
+    // input.localPosition = localPosition;
+    // input.localNormal = localNormal;
     input.boneIndices = float4(boneWeights.x, boneWeights.z, 0, 0);
     input.boneWeights = float4(boneWeights.y, boneWeights.w, 0, 0);
     return input;
@@ -152,7 +158,7 @@ float4x4 GetBakedSkinMatrix(
 }
 
 
-float3 GetBakedAnimationPositionOS(BakedSkinningAnimationInput input, float4x4 skinMatrix)
+float3 GetBakedAnimationPositionOS(float3 localPosition, float4x4 skinMatrix)
 {
     // float2 boneUV00 = CalcBoneUV(input.boneIndex0, 0);
     // float2 boneUV01 = CalcBoneUV(input.boneIndex0, 1);
@@ -199,10 +205,10 @@ float3 GetBakedAnimationPositionOS(BakedSkinningAnimationInput input, float4x4 s
     // // debug
     // // return input.localPosition;
     
-    return mul(skinMatrix, float4(input.localPosition, 1.)).xyz;
+    return mul(skinMatrix, float4(localPosition, 1.)).xyz;
 }
 
-float4 GetBakedAnimationNormalOS(BakedSkinningAnimationInput input, float4x4 skinMatrix)
+float4 GetBakedAnimationNormalOS(float3 localNormal, float4x4 skinMatrix)
 {
     // TODO: skinningに合わせて再計算
     return float4(0, 0, 1, 1);

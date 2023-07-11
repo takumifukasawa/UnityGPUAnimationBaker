@@ -11,7 +11,7 @@
 // ------------------------------------------------------------
 // CUSTOM_LINE_BEGIN
 // ------------------------------------------------------------
- 
+
 #include "BakedSkinningCommon.hlsl"
 
 // ------------------------------------------------------------
@@ -20,12 +20,12 @@
 
 struct Attributes
 {
-    float4 position     : POSITION;
-    float2 texcoord     : TEXCOORD0;
+    float4 position : POSITION;
+    float2 texcoord : TEXCOORD0;
     // ----------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
-    float2 texcoord2     : TEXCOORD1;
+    float2 texcoord2 : TEXCOORD1;
     float4 texcoord3 : TEXCOORD2;
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
@@ -35,8 +35,8 @@ struct Attributes
 
 struct Varyings
 {
-    float2 uv           : TEXCOORD0;
-    float4 positionCS   : SV_POSITION;
+    float2 uv : TEXCOORD0;
+    float4 positionCS : SV_POSITION;
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
@@ -51,22 +51,24 @@ Varyings DepthOnlyVertex(Attributes input)
     // ----------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
- 
+
     // ORIGINAL
     // output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     // output.positionCS = TransformObjectToHClip(input.position.xyz);
- 
-    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.position.xyz, input.texcoord3);
+
+    BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(
+        input.texcoord3
+    );
     float4x4 bakedSkinMatrix = GetBakedSkinMatrix(
         bakedSkinningAnimationInput.boneIndices,
         bakedSkinningAnimationInput.boneWeights
     );
-    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput, bakedSkinMatrix);
- 
+    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(input.position, bakedSkinMatrix);
+
     // BakedSkinningAnimationInfo bakedSkinningAnimationInfo = GetBakedSkinningAnimationInfo(input.texcoord2);
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     output.positionCS = TransformObjectToHClip(bakedSkinningPositionOS);
- 
+
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
     // ----------------------------------------------------------------
