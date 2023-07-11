@@ -21,23 +21,25 @@ int TextureHeight;
 [numthreads(1,1,1)]
 void CSMain(uint2 id : SV_DispatchThreadID)
 {
-    int dataIndex = id.y * TextureWidth / 4 + id.x;
+    int bakeRowNum = 4;
+    
+    int dataIndex = id.y * TextureWidth / bakeRowNum + id.x;
 
     BoneAttributes OutputData = InputData[dataIndex];
 
-    float2 uv0 = float2(id.x * 4 + 0, id.y);
-    float2 uv1 = float2(id.x * 4 + 1, id.y);
-    float2 uv2 = float2(id.x * 4 + 2, id.y);
-    float2 uv3 = float2(id.x * 4 + 3, id.y);
+    float2 uv0 = float2(id.x * bakeRowNum + 0, id.y);
+    float2 uv1 = float2(id.x * bakeRowNum + 1, id.y);
+    float2 uv2 = float2(id.x * bakeRowNum + 2, id.y);
+    // float2 uv3 = float2(id.x * 3 + 3, id.y);
 
     float4 boneRow0 = OutputData.BoneRow0;
     float4 boneRow1 = OutputData.BoneRow1;
     float4 boneRow2 = OutputData.BoneRow2;
-    float4 boneRow3 = OutputData.BoneRow3;
+    // float4 boneRow3 = OutputData.BoneRow3;
 
     // base
     OutBones[uv0] = boneRow0;
     OutBones[uv1] = boneRow1;
     OutBones[uv2] = boneRow2;
-    OutBones[uv3] = boneRow3;
+    // OutBones[uv3] = boneRow3;
 }

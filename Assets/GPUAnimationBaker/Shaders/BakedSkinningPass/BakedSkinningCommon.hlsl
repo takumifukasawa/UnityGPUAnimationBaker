@@ -78,12 +78,14 @@ float2 CalcBoneUV(int boneIndex, int matrixColIndex = 0)
     // for debug
     // frameIndex = 0;
 
+    int boneRowNum = 4;
+
     // TODO:
     // - ここで4かけつつ行列のベクトル分割用にoffsetするべき？
     // - matrix col index は普通に足してok??
     float boneFrameIndex =
-        instancedBoneCount * frameIndex * 4 + // フレーム数分ボーンの数をオフセット
-        boneIndex * 4 + // ボーンのindex分ずらす
+        instancedBoneCount * frameIndex * boneRowNum + // フレーム数分ボーンの数をオフセット
+        boneIndex * boneRowNum + // ボーンのindex分ずらす
         matrixColIndex; // ボーンの行列の行分ずらす
     // for debug: frame index = 0
     // float boneFrameIndex = boneIndex * 4 + matrixColIndex;

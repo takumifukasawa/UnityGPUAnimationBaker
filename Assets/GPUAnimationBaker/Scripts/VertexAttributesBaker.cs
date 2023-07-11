@@ -72,9 +72,9 @@ namespace GPUAnimationBaker
             BoneAttributes vertexAttributes = new BoneAttributes(
                 new Vector4(m.m00, m.m01, m.m02, m.m03),
                 new Vector4(m.m10, m.m11, m.m12, m.m13),
-                new Vector4(m.m20, m.m21, m.m22, m.m23),
+                new Vector4(m.m20, m.m21, m.m22, m.m23)
                 // new Vector4(m.m30, m.m31, m.m32, m.m33)
-                new Vector4(0, 0, 0, 1)
+                // new Vector4(0, 0, 0, 1)
             );
             _boneAttributesList.Add(vertexAttributes);
         }
@@ -103,10 +103,12 @@ namespace GPUAnimationBaker
             int frames,
             int uvChannel)
         {
+            int bakeRowNum = 4;
+            
             int boneCount = _skinnedMeshRenderer.bones.Length;
 
             // for bake skinning
-            int pixels = boneCount * 4 * frames;
+            int pixels = boneCount * bakeRowNum * frames;
 
             Vector2Int textureSize = GetTexturePOTRect(pixels);
 
@@ -118,13 +120,15 @@ namespace GPUAnimationBaker
             GraphicsBuffer graphicsBuffer = new GraphicsBuffer(
                 GraphicsBuffer.Target.Structured,
                 _boneAttributesList.Count,
-                Marshal.SizeOf(new Vector4()) * 4
+                Marshal.SizeOf(new Vector4()) * bakeRowNum
             );
             graphicsBuffer.SetData(_boneAttributesList.ToArray());
 
             int kernel = bakerComputeShader.FindKernel("CSMain");
             // uint x, y, z;
             // bakerComputeShader.GetKernelThreadGrouprects(kernel, out x, out y, out z);
+
+            int div = Mathf.FloorToInt(textureWidth / bakeRowNum);
 
             bakerComputeShader.SetInt("BoneCount", boneCount);
             bakerComputeShader.SetInt("TextureWidth", textureWidth);
@@ -133,7 +137,7 @@ namespace GPUAnimationBaker
             bakerComputeShader.SetTexture(kernel, "OutBones", _bakedBonesRenderTexture);
             bakerComputeShader.Dispatch(
                 kernel,
-                textureWidth / 4, // w
+                textureWidth / bakeRowNum, // w
                 textureHeight, // h
                 1
             );
@@ -267,12 +271,13 @@ namespace GPUAnimationBaker
             public Vector4 BoneRow2;
             public Vector4 BoneRow3;
 
-            public BoneAttributes(Vector4 r0, Vector4 r1, Vector4 r2, Vector4 r3)
+            public BoneAttributes(Vector4 r0, Vector4 r1, Vector4 r2)
             {
                 BoneRow0 = r0;
                 BoneRow1 = r1;
                 BoneRow2 = r2;
-                BoneRow3 = r3;
+                BoneRow3 = new Vector4(0, 0, 0, 1);
+                // BoneRow3 = r3;
             }
         }
 
