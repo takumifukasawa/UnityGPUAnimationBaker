@@ -7,7 +7,7 @@ struct BoneAttributes
     float4 BoneRow0;
     float4 BoneRow1;
     float4 BoneRow2;
-    float4 BoneRow3;
+    // float4 BoneRow3;
 };
 
 // Create a RenderTexture with enableRandomWrite flag and set it
@@ -17,29 +17,69 @@ StructuredBuffer<BoneAttributes> InputData;
 
 int TextureWidth;
 int TextureHeight;
+int ColIndex;
 
 [numthreads(1,1,1)]
 void CSMain(uint2 id : SV_DispatchThreadID)
 {
-    int bakeRowNum = 4;
-    
-    int dataIndex = id.y * TextureWidth / bakeRowNum + id.x;
+    int bakeRowNum = 3;
 
-    BoneAttributes OutputData = InputData[dataIndex];
+    // int dataIndex = id.y * TextureWidth / bakeRowNum + id.x;
 
-    float2 uv0 = float2(id.x * bakeRowNum + 0, id.y);
-    float2 uv1 = float2(id.x * bakeRowNum + 1, id.y);
-    float2 uv2 = float2(id.x * bakeRowNum + 2, id.y);
-    // float2 uv3 = float2(id.x * 3 + 3, id.y);
+    // i = id.x
+    for (int i = 0; i < TextureWidth; i++)
+    {
+        int pixelIndex = id.y * TextureWidth + i;
+        int rowIndex = pixelIndex % bakeRowNum;
+        int dataIndex = (int)(pixelIndex / bakeRowNum);
 
-    float4 boneRow0 = OutputData.BoneRow0;
-    float4 boneRow1 = OutputData.BoneRow1;
-    float4 boneRow2 = OutputData.BoneRow2;
-    // float4 boneRow3 = OutputData.BoneRow3;
+        BoneAttributes OutputData = InputData[dataIndex];
 
-    // base
-    OutBones[uv0] = boneRow0;
-    OutBones[uv1] = boneRow1;
-    OutBones[uv2] = boneRow2;
-    // OutBones[uv3] = boneRow3;
+        float2 uv = float2(i, id.y);
+        float4 boneRow;
+
+        float dc;
+
+        if (rowIndex == 0)
+        {
+            dc = 0;
+            boneRow = OutputData.BoneRow0;
+        }
+        else if (rowIndex == 1)
+        {
+            dc = 0.5;
+            boneRow = OutputData.BoneRow1;
+        }
+        else if (rowIndex == 2)
+        {
+            dc = 1;
+            boneRow = OutputData.BoneRow2;
+        }
+        // OutBones[uv] = float4(uv.xy / float2(TextureWidth, TextureHeight), 1., 1.);
+        OutBones[uv] = boneRow;
+        // OutBones[uv] = float4(
+        //     // (float)rowIndex / (float)3,
+        //     dc,
+        //     0,
+        //     // (float)i / (float)TextureWidth,
+        //     // (float)id.y / (float)TextureHeight,
+        //     0,
+        //     1);
+    }
+
+    // float2 uv0 = float2(id.x * bakeRowNum + 0, id.y);
+    // float2 uv1 = float2(id.x * bakeRowNum + 1, id.y);
+    // float2 uv2 = float2(id.x * bakeRowNum + 2, id.y);
+    // // float2 uv3 = float2(id.x * 3 + 3, id.y);
+
+    // float4 boneRow0 = OutputData.BoneRow0;
+    // float4 boneRow1 = OutputData.BoneRow1;
+    // float4 boneRow2 = OutputData.BoneRow2;
+    // // float4 boneRow3 = OutputData.BoneRow3;
+
+    // // base
+    // OutBones[uv0] = boneRow0;
+    // OutBones[uv1] = boneRow1;
+    // OutBones[uv2] = boneRow2;
+    // // OutBones[uv3] = boneRow3;
 }

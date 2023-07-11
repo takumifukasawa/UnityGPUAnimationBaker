@@ -78,7 +78,7 @@ float2 CalcBoneUV(int boneIndex, int matrixColIndex = 0)
     // for debug
     // frameIndex = 0;
 
-    int boneRowNum = 4;
+    int boneRowNum = 3;
 
     // TODO:
     // - ここで4かけつつ行列のベクトル分割用にoffsetするべき？

@@ -103,7 +103,7 @@ namespace GPUAnimationBaker
             int frames,
             int uvChannel)
         {
-            int bakeRowNum = 4;
+            int bakeRowNum = 3;
             
             int boneCount = _skinnedMeshRenderer.bones.Length;
 
@@ -137,8 +137,10 @@ namespace GPUAnimationBaker
             bakerComputeShader.SetTexture(kernel, "OutBones", _bakedBonesRenderTexture);
             bakerComputeShader.Dispatch(
                 kernel,
-                textureWidth / bakeRowNum, // w
+                // textureWidth / bakeRowNum, // w / 4
+                1,
                 textureHeight, // h
+                // 1,
                 1
             );
 
@@ -269,14 +271,14 @@ namespace GPUAnimationBaker
             public Vector4 BoneRow0;
             public Vector4 BoneRow1;
             public Vector4 BoneRow2;
-            public Vector4 BoneRow3;
+            // public Vector4 BoneRow3;
 
             public BoneAttributes(Vector4 r0, Vector4 r1, Vector4 r2)
             {
                 BoneRow0 = r0;
                 BoneRow1 = r1;
                 BoneRow2 = r2;
-                BoneRow3 = new Vector4(0, 0, 0, 1);
+                // BoneRow3 = new Vector4(0, 0, 0, 1);
                 // BoneRow3 = r3;
             }
         }
