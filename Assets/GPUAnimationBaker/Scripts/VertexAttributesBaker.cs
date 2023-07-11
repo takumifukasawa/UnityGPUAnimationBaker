@@ -516,17 +516,17 @@ namespace GPUAnimationBaker
             mesh.vertices = sourceMesh.vertices;
             mesh.uv = sourceMesh.uv;
 
-            int animationFramesUVChannel = 1;
-            int boneWeightsUVChannel = 2;
+            // int animationFramesUVChannel = 1;
+            int boneWeightsUVChannel = 3; // TODO: const 化してもよいかも
 
-            // create uv
-            List<Vector2> refUV = new List<Vector2>();
-            for (int i = 0; i < sourceMesh.vertexCount; i++)
-            {
-                // refUV.Add(new Vector2(i + 0.5f, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
-                // refUV.Add(new Vector2(i, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
-                refUV.Add(new Vector2(i, 0));
-            }
+            // // create uv
+            // List<Vector2> refUV = new List<Vector2>();
+            // for (int i = 0; i < sourceMesh.vertexCount; i++)
+            // {
+            //     // refUV.Add(new Vector2(i + 0.5f, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
+            //     // refUV.Add(new Vector2(i, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
+            //     refUV.Add(new Vector2(i, 0));
+            // }
 
 
             // create vertex bone weights
@@ -572,7 +572,7 @@ namespace GPUAnimationBaker
 
             // default
             // mesh.SetUVs(uvChannel, refUV);
-            mesh.SetUVs(animationFramesUVChannel, refUV);
+            // mesh.SetUVs(animationFramesUVChannel, refUV);
 
             mesh.SetUVs(boneWeightsUVChannel, packedVerticesBoneWeights);
 

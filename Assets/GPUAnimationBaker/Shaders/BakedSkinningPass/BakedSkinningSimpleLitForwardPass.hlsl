@@ -25,8 +25,7 @@ struct Attributes
     float4 tangentOS : TANGENT;
     float2 texcoord : TEXCOORD0;
     // CUSTOM_LINE_BEGIN
-    float2 texcoord2 : TEXCOORD1;
-    float4 texcoord3 : TEXCOORD2;
+    float4 texcoord3 : TEXCOORD3;
     // CUSTOM_LINE_END   
     // ORIGINAL_BEGIN use
     // float2 staticLightmapUV    : TEXCOORD1;

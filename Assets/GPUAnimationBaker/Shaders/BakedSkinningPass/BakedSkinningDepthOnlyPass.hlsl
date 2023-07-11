@@ -25,8 +25,7 @@ struct Attributes
     // ----------------------------------------------------------------
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
-    float2 texcoord2 : TEXCOORD1;
-    float4 texcoord3 : TEXCOORD2;
+    float4 texcoord3 : TEXCOORD3;
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
     // ----------------------------------------------------------------   
@@ -64,8 +63,6 @@ Varyings DepthOnlyVertex(Attributes input)
         bakedSkinningAnimationInput.boneWeights
     );
     float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(input.position.xyz, bakedSkinMatrix);
-
-    // BakedSkinningAnimationInfo bakedSkinningAnimationInfo = GetBakedSkinningAnimationInfo(input.texcoord2);
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     output.positionCS = TransformObjectToHClip(bakedSkinningPositionOS);
 
