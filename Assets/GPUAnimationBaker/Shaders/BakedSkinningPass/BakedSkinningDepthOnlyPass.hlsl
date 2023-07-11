@@ -63,7 +63,7 @@ Varyings DepthOnlyVertex(Attributes input)
         bakedSkinningAnimationInput.boneIndices,
         bakedSkinningAnimationInput.boneWeights
     );
-    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(input.position, bakedSkinMatrix);
+    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(input.position.xyz, bakedSkinMatrix);
 
     // BakedSkinningAnimationInfo bakedSkinningAnimationInfo = GetBakedSkinningAnimationInfo(input.texcoord2);
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);

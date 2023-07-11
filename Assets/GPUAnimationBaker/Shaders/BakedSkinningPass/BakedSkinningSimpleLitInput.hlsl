@@ -22,6 +22,7 @@ CBUFFER_START(UnityPerMaterial)
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
     sampler2D _BakedBonesMap;
+// half4 _CustomColor;
     // NOTE: skinningパターンではいらない
     // sampler2D _BakedPositionMap;
     // sampler2D _BakedNormalMap;

@@ -6,6 +6,7 @@ using UnityEditor;
 namespace GPUAnimationBaker
 {
     [CustomEditor(typeof(GPUAnimationController))]
+    [CanEditMultipleObjects]
     public class GPUAnimationControllerEditor : Editor
     {
         public override void OnInspectorGUI()

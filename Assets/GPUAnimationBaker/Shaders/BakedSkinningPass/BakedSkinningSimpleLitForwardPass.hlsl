@@ -184,7 +184,7 @@ Varyings LitPassVertexSimple(Attributes input)
         bakedSkinningAnimationInput.boneIndices,
         bakedSkinningAnimationInput.boneWeights
     );
-    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(input.positionOS, bakedSkinMatrix);
+    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(input.positionOS.xyz, bakedSkinMatrix);
     float3 bakedSkinningNormalOS = GetBakedAnimationNormalOS(input.normalOS, bakedSkinMatrix);
     float4 bakedSkinningTangentOS = GetBakedAnimationTangentOS(bakedSkinningAnimationInput, bakedSkinMatrix);
 
@@ -271,9 +271,11 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
 
-    _CustomColor = float4(1., 1., 1., 1.);
+    // _CustomColor = float4(1., 1., 1., 1.);
     half4 instancedCustomColor = UNITY_ACCESS_INSTANCED_PROP(Props, _CustomColor);
     _BaseColor *= instancedCustomColor;
+    // _BaseColor *= float4(1., 1., 1., 1.);
+    // _BaseColor *= _CustomColor;
 
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
