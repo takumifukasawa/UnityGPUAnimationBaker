@@ -178,9 +178,13 @@ Varyings LitPassVertexSimple(Attributes input)
     // VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
 
     BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.positionOS.xyz, input.texcoord3);
-    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput);
-    float4 bakedSkinningNormalOS = GetBakedAnimationNormalOS(bakedSkinningAnimationInput);
-    float4 bakedSkinningTangentOS = GetBakedAnimationTangentOS(bakedSkinningAnimationInput);
+    float4x4 bakedSkinMatrix = GetBakedSkinMatrix(
+        bakedSkinningAnimationInput.boneIndices,
+        bakedSkinningAnimationInput.boneWeights
+    );
+    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput, bakedSkinMatrix);
+    float4 bakedSkinningNormalOS = GetBakedAnimationNormalOS(bakedSkinningAnimationInput, bakedSkinMatrix);
+    float4 bakedSkinningTangentOS = GetBakedAnimationTangentOS(bakedSkinningAnimationInput, bakedSkinMatrix);
 
     VertexPositionInputs vertexInput = GetVertexPositionInputs(bakedSkinningPositionOS);
     VertexNormalInputs normalInput = GetVertexNormalInputs(bakedSkinningNormalOS, bakedSkinningTangentOS);
@@ -297,7 +301,7 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     // float4 l = tex2D(_BakedBonesMap, float2(.1, .1));
     // float4 l = tex2D(_BakedBonesMap, input.uv);
     // color.rgba = half4(l.xyz, 1.);
-    color.rgba = half4(input.uv, 0, 1.);
+    // color.rgba = half4(input.boneWeights.www, 1.);
     // color.rgba = half4(d, 1, 1.);
      
 

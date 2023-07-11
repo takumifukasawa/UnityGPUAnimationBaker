@@ -13,10 +13,8 @@ struct BakedSkinningAnimationInput
     // float instancedTimeOffset;
     // float4 animationUV;
     float3 localPosition;
-    int boneIndex0;
-    int boneWeight0;
-    int boneIndex1;
-    int boneWeight1;
+    float4 boneIndices;
+    float4 boneWeights;
 };
 
 BakedSkinningAnimationInput CreateBakedSkinningAnimationInput(float3 localPosition, float4 boneWeights)
@@ -24,11 +22,8 @@ BakedSkinningAnimationInput CreateBakedSkinningAnimationInput(float3 localPositi
     BakedSkinningAnimationInput input;
 
     input.localPosition = localPosition;
-    input.boneIndex0 = boneWeights.x;
-    input.boneWeight0 = boneWeights.y;
-    input.boneIndex1 = boneWeights.z;
-    input.boneWeight1 = boneWeights.w;
-
+    input.boneIndices = float4(boneWeights.x, boneWeights.z, 0, 0);
+    input.boneWeights = float4(boneWeights.y, boneWeights.w, 0, 0);
     return input;
 }
 
@@ -100,30 +95,35 @@ float2 CalcBoneUV(int boneIndex, int matrixColIndex = 0)
     return float2(frameX, frameY);
 }
 
-float3 GetBakedAnimationPositionOS(BakedSkinningAnimationInput input)
+
+// NOTE: ブレンドするボーンは2つまで
+float4x4 GetBakedSkinMatrix(
+    float4 boneIndices,
+    float4 boneWeights
+)
 {
-    float2 boneUV00 = CalcBoneUV(input.boneIndex0, 0);
-    float2 boneUV01 = CalcBoneUV(input.boneIndex0, 1);
-    float2 boneUV02 = CalcBoneUV(input.boneIndex0, 2);
+    float2 boneUV00 = CalcBoneUV(boneIndices.x, 0);
+    float2 boneUV01 = CalcBoneUV(boneIndices.x, 1);
+    float2 boneUV02 = CalcBoneUV(boneIndices.x, 2);
     // float2 boneUV03 = CalcBoneUV(input.boneIndex0, 3);
-    
-    float2 boneUV10 = CalcBoneUV(input.boneIndex1, 0);
-    float2 boneUV11 = CalcBoneUV(input.boneIndex1, 1);
-    float2 boneUV12 = CalcBoneUV(input.boneIndex1, 2);
+
+    float2 boneUV10 = CalcBoneUV(boneIndices.y, 0);
+    float2 boneUV11 = CalcBoneUV(boneIndices.y, 1);
+    float2 boneUV12 = CalcBoneUV(boneIndices.y, 2);
     // float2 boneUV13 = CalcBoneUV(input.boneIndex1, 3);
-    
+
     float4 bone0Col0 = tex2Dlod(_BakedBonesMap, float4(boneUV00, 0, 0));
     float4 bone0Col1 = tex2Dlod(_BakedBonesMap, float4(boneUV01, 0, 0));
     float4 bone0Col2 = tex2Dlod(_BakedBonesMap, float4(boneUV02, 0, 0));
     // float4 bone0Col3 = tex2Dlod(_BakedBonesMap, boneUV03);
     float4 bone0Col3 = float4(0, 0, 0, 1);
-    
+
     float4 bone1Col0 = tex2Dlod(_BakedBonesMap, float4(boneUV10, 0, 0));
     float4 bone1Col1 = tex2Dlod(_BakedBonesMap, float4(boneUV11, 0, 0));
     float4 bone1Col2 = tex2Dlod(_BakedBonesMap, float4(boneUV12, 0, 0));
     // float4 bone1Col3 = tex2Dlod(_BakedBonesMap, boneUV13);
     float4 bone1Col3 = float4(0, 0, 0, 1);
-    
+
     // float4x4 bone0Mat = float4x4(
     //     bone0Col0.x, bone0Col0.y, bone0Col0.z, bone0Col0.w,
     //     bone0Col1.x, bone0Col1.y, bone0Col1.z, bone0Col1.w,
@@ -136,26 +136,80 @@ float3 GetBakedAnimationPositionOS(BakedSkinningAnimationInput input)
     // float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * input.boneWeight1;
     // float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * 0;
     float4x4 boneMat = float4x4(
-        lerp(bone0Col0, bone1Col0, input.boneWeight0 / 1),
-        lerp(bone0Col1, bone1Col1, input.boneWeight0 / 1),
-        lerp(bone0Col2, bone1Col2, input.boneWeight0 / 1),
+        lerp(bone0Col0, bone1Col0, boneWeights.x / 1),
+        lerp(bone0Col1, bone1Col1, boneWeights.x / 1),
+        lerp(bone0Col2, bone1Col2, boneWeights.x / 1),
         float4(0, 0, 0, 1)
     );
-    
+
+    return bone0Mat;
+    // return boneMat;
+
     // return mul(bone0Mat, float4(input.localPosition, 1.)).xyz;
-    return mul(boneMat, float4(input.localPosition, 1.)).xyz;
+    // return mul(boneMat, float4(input.localPosition, 1.)).xyz;
     // debug
     // return input.localPosition;
 }
 
-float4 GetBakedAnimationNormalOS(BakedSkinningAnimationInput input)
+
+float3 GetBakedAnimationPositionOS(BakedSkinningAnimationInput input, float4x4 skinMatrix)
+{
+    // float2 boneUV00 = CalcBoneUV(input.boneIndex0, 0);
+    // float2 boneUV01 = CalcBoneUV(input.boneIndex0, 1);
+    // float2 boneUV02 = CalcBoneUV(input.boneIndex0, 2);
+    // // float2 boneUV03 = CalcBoneUV(input.boneIndex0, 3);
+
+    // float2 boneUV10 = CalcBoneUV(input.boneIndex1, 0);
+    // float2 boneUV11 = CalcBoneUV(input.boneIndex1, 1);
+    // float2 boneUV12 = CalcBoneUV(input.boneIndex1, 2);
+    // // float2 boneUV13 = CalcBoneUV(input.boneIndex1, 3);
+
+    // float4 bone0Col0 = tex2Dlod(_BakedBonesMap, float4(boneUV00, 0, 0));
+    // float4 bone0Col1 = tex2Dlod(_BakedBonesMap, float4(boneUV01, 0, 0));
+    // float4 bone0Col2 = tex2Dlod(_BakedBonesMap, float4(boneUV02, 0, 0));
+    // // float4 bone0Col3 = tex2Dlod(_BakedBonesMap, boneUV03);
+    // float4 bone0Col3 = float4(0, 0, 0, 1);
+
+    // float4 bone1Col0 = tex2Dlod(_BakedBonesMap, float4(boneUV10, 0, 0));
+    // float4 bone1Col1 = tex2Dlod(_BakedBonesMap, float4(boneUV11, 0, 0));
+    // float4 bone1Col2 = tex2Dlod(_BakedBonesMap, float4(boneUV12, 0, 0));
+    // // float4 bone1Col3 = tex2Dlod(_BakedBonesMap, boneUV13);
+    // float4 bone1Col3 = float4(0, 0, 0, 1);
+
+    // // float4x4 bone0Mat = float4x4(
+    // //     bone0Col0.x, bone0Col0.y, bone0Col0.z, bone0Col0.w,
+    // //     bone0Col1.x, bone0Col1.y, bone0Col1.z, bone0Col1.w,
+    // //     bone0Col2.x, bone0Col2.y, bone0Col2.z, bone0Col2.w,
+    // //     0, 0, 0, 1
+    // // );
+    // float4x4 bone0Mat = float4x4(bone0Col0, bone0Col1, bone0Col2, bone0Col3);
+    // float4x4 bone1Mat = float4x4(bone1Col0, bone1Col1, bone1Col2, bone1Col3);
+    // // blend
+    // // float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * input.boneWeight1;
+    // // float4x4 boneMat = bone0Mat * input.boneWeight0 + bone1Mat * 0;
+    // float4x4 boneMat = float4x4(
+    //     lerp(bone0Col0, bone1Col0, input.boneWeight0 / 1),
+    //     lerp(bone0Col1, bone1Col1, input.boneWeight0 / 1),
+    //     lerp(bone0Col2, bone1Col2, input.boneWeight0 / 1),
+    //     float4(0, 0, 0, 1)
+    // );
+
+    // return mul(bone0Mat, float4(input.localPosition, 1.)).xyz;
+    // // return mul(boneMat, float4(input.localPosition, 1.)).xyz;
+    // // debug
+    // // return input.localPosition;
+    
+    return mul(skinMatrix, float4(input.localPosition, 1.)).xyz;
+}
+
+float4 GetBakedAnimationNormalOS(BakedSkinningAnimationInput input, float4x4 skinMatrix)
 {
     // TODO: skinningに合わせて再計算
     return float4(0, 0, 1, 1);
     // return tex2Dlod(_BakedNormalMap, input.animationUV);
 }
 
-float4 GetBakedAnimationTangentOS(BakedSkinningAnimationInput input)
+float4 GetBakedAnimationTangentOS(BakedSkinningAnimationInput input, float4x4 skinMatrix)
 {
     // NOTE: 一旦tangent消してみる
     return float4(1, 0, 0, 1);

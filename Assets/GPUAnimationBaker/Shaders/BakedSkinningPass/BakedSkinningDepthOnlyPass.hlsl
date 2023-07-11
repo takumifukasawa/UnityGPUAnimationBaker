@@ -57,7 +57,11 @@ Varyings DepthOnlyVertex(Attributes input)
     // output.positionCS = TransformObjectToHClip(input.position.xyz);
  
     BakedSkinningAnimationInput bakedSkinningAnimationInput = CreateBakedSkinningAnimationInput(input.position.xyz, input.texcoord3);
-    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput);
+    float4x4 bakedSkinMatrix = GetBakedSkinMatrix(
+        bakedSkinningAnimationInput.boneIndices,
+        bakedSkinningAnimationInput.boneWeights
+    );
+    float3 bakedSkinningPositionOS = GetBakedAnimationPositionOS(bakedSkinningAnimationInput, bakedSkinMatrix);
  
     // BakedSkinningAnimationInfo bakedSkinningAnimationInfo = GetBakedSkinningAnimationInfo(input.texcoord2);
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
