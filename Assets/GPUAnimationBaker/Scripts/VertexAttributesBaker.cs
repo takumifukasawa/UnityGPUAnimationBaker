@@ -52,7 +52,6 @@ namespace GPUAnimationBaker
             var boneOffsetMatrices = GetBoneOffsetMatrices(_skinnedMeshRenderer);
             var bones = _skinnedMeshRenderer.bones;
             var poseMatrices = CalculateBonePoseMatrices(bones, boneOffsetMatrices);
-            // var m = _skinnedMeshRenderer.bones[boneIndex].localToWorldMatrix;
 
             for (int i = 0; i < _skinnedMeshRenderer.bones.Length; i++)
             {
@@ -73,8 +72,6 @@ namespace GPUAnimationBaker
                 new Vector4(m.m00, m.m01, m.m02, m.m03),
                 new Vector4(m.m10, m.m11, m.m12, m.m13),
                 new Vector4(m.m20, m.m21, m.m22, m.m23)
-                // new Vector4(m.m30, m.m31, m.m32, m.m33)
-                // new Vector4(0, 0, 0, 1)
             );
             _boneAttributesList.Add(vertexAttributes);
         }
@@ -125,8 +122,6 @@ namespace GPUAnimationBaker
             graphicsBuffer.SetData(_boneAttributesList.ToArray());
 
             int kernel = bakerComputeShader.FindKernel("CSMain");
-            // uint x, y, z;
-            // bakerComputeShader.GetKernelThreadGrouprects(kernel, out x, out y, out z);
 
             int div = Mathf.FloorToInt(textureWidth / bakeRowNum);
 
@@ -137,10 +132,8 @@ namespace GPUAnimationBaker
             bakerComputeShader.SetTexture(kernel, "OutBones", _bakedBonesRenderTexture);
             bakerComputeShader.Dispatch(
                 kernel,
-                // textureWidth / bakeRowNum, // w / 4
                 1,
                 textureHeight, // h
-                // 1,
                 1
             );
 
@@ -230,8 +223,6 @@ namespace GPUAnimationBaker
             GameObject staticMeshGameObject = new GameObject(name);
 
             staticMeshGameObject.AddComponent<MeshRenderer>().sharedMaterial = runtimeMaterial;
-            // staticMeshGameObject.AddComponent<MeshRenderer>().materials[0] = runtimeMaterial;
-
             staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = _runtimeMesh;
 
             Debug.Log($"[VertexAttributesBaker.SaveAssets] static mesh go: {staticMeshGameObject}");
@@ -242,7 +233,6 @@ namespace GPUAnimationBaker
             PrefabUtility.SaveAsPrefabAsset(
                 staticMeshGameObject,
                 Path.Combine(folderPath, name + ".prefab").Replace("\\", "/")
-                // Path.Combine(subFolderPath, name + ".prefab").Replace("\\", "/")
             );
 
             // ----
@@ -266,20 +256,20 @@ namespace GPUAnimationBaker
         // private
         // ----------------------------------------------------------------------------------
 
+        /// <summary>
+        /// 
+        /// </summary>
         private struct BoneAttributes
         {
             public Vector4 BoneRow0;
             public Vector4 BoneRow1;
             public Vector4 BoneRow2;
-            // public Vector4 BoneRow3;
 
             public BoneAttributes(Vector4 r0, Vector4 r1, Vector4 r2)
             {
                 BoneRow0 = r0;
                 BoneRow1 = r1;
                 BoneRow2 = r2;
-                // BoneRow3 = new Vector4(0, 0, 0, 1);
-                // BoneRow3 = r3;
             }
         }
 
@@ -317,89 +307,18 @@ namespace GPUAnimationBaker
             return rt;
         }
 
-
-        // /// <summary>
-        // /// とある時点での全てのボーンにおける、ボーンごとの姿勢行列
-        // /// </summary>
-        // /// <returns></returns>
-        // static Matrix4x4 GetBonePoseMatrices(SkinnedMeshRenderer skinnedMeshRenderer)
-        // {
-        //     int vertexCount = skinnedMeshRenderer.sharedMesh.vertexCount;
-        //     var boneWeights = skinnedMeshRenderer.sharedMesh.GetAllBoneWeights();
-        //     var bonesPerVertex = skinnedMeshRenderer.sharedMesh.GetBonesPerVertex();
-
-        //     Debug.Log("-------------------");
-        //     Debug.Log(skinnedMeshRenderer.bones);
-        //     Debug.Log($"bone count: {skinnedMeshRenderer.bones.Length}");
-        //     Debug.Log(skinnedMeshRenderer.sharedMesh.bindposes);
-        //     Debug.Log($"bind pose count: {skinnedMeshRenderer.sharedMesh.bindposes.Length}");
-
-        //     var bones = skinnedMeshRenderer.bones;
-
-        //     var boneWeightIndex = 0;
-        //     for (var vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
-        //     {
-        //         var totalWeight = 0f;
-        //         var numberOfBonesForThisVertex = bonesPerVertex[vertexIndex];
-        //         Debug.Log($"vertex index: {vertexIndex}, influence bone num: {numberOfBonesForThisVertex}");
-        //         for (var i = 0; i < numberOfBonesForThisVertex; i++)
-        //         {
-        //             var currentBoneWeight = boneWeights[boneWeightIndex];
-        //             totalWeight += currentBoneWeight.weight;
-        //             Debug.Log($"vertex index: {vertexIndex}, influence bone index: {currentBoneWeight.boneIndex}, bone weight: {currentBoneWeight.weight}");
-        //             if (i > 0)
-        //             {
-        //                 Debug.Assert(boneWeights[boneWeightIndex - 1].weight != currentBoneWeight.weight);
-        //             }
-
-        //             boneWeightIndex++;
-        //         }
-
-        //         Debug.Assert(Mathf.Approximately(1f, totalWeight));
-        //     }
-
-        //     Debug.Log("-------------------");
-        // }
-
         /// <summary>
         /// とある頂点のboneweightを取得
         /// </summary>
         /// <param name="vertexIndex"></param>
         /// <returns></returns>
-        // List<BoneWeight1> GetVertexBoneWeight(int vertexIndex)
         static List<List<BoneWeight1>> GetVerticesBoneWeights(Mesh sourceMesh)
         {
-            // int vertexCount = _skinnedMeshRenderer.sharedMesh.vertexCount;
-            // var boneWeights = _skinnedMeshRenderer.sharedMesh.GetAllBoneWeights();
-            // var bonesPerVertex = _skinnedMeshRenderer.sharedMesh.GetBonesPerVertex();
-
-            // var vertexBoneWeights = new List<BoneWeight1>();
-
-            // var boneWeightIndex = 0;
-            // var totalWeight = 0f;
-            // var numberOfBonesForThisVertex = bonesPerVertex[vertexIndex];
-            // for (var i = 0; i < numberOfBonesForThisVertex; i++)
-            // {
-            //     var currentBoneWeight = boneWeights[boneWeightIndex];
-            //     Debug.Log($"vertex index: {vertexIndex}, influence bone index: {currentBoneWeight.boneIndex}, bone weight: {currentBoneWeight.weight}");
-            //     vertexBoneWeights.Add(currentBoneWeight);
-            //     boneWeightIndex++;
-            // }
-
-            // return vertexBoneWeights;
-
             var verticesBoneWeights = new List<List<BoneWeight1>>();
 
             int vertexCount = sourceMesh.vertexCount;
             var boneWeights = sourceMesh.GetAllBoneWeights();
             var bonesPerVertex = sourceMesh.GetBonesPerVertex();
-
-            // Debug.Log("-------------------");
-            // Debug.Log(_skinnedMeshRenderer.bones);
-            // Debug.Log($"bone count: {_skinnedMeshRenderer.bones.Length}");
-            // Debug.Log(_skinnedMeshRenderer.sharedMesh.bindposes);
-            // Debug.Log($"bind pose count: {_skinnedMeshRenderer.sharedMesh.bindposes.Length}");
-            // var bones = _skinnedMeshRenderer.bones;
 
             var boneWeightIndex = 0;
             for (var vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
@@ -432,46 +351,6 @@ namespace GPUAnimationBaker
 
             return verticesBoneWeights;
         }
-
-        // /// <summary>
-        // /// 
-        // /// </summary>
-        // void GetBoneWeights()
-        // {
-        //     int vertexCount = _skinnedMeshRenderer.sharedMesh.vertexCount;
-        //     var boneWeights = _skinnedMeshRenderer.sharedMesh.GetAllBoneWeights();
-        //     var bonesPerVertex = _skinnedMeshRenderer.sharedMesh.GetBonesPerVertex();
-
-        //     Debug.Log("-------------------");
-        //     Debug.Log(_skinnedMeshRenderer.bones);
-        //     Debug.Log($"bone count: {_skinnedMeshRenderer.bones.Length}");
-        //     Debug.Log(_skinnedMeshRenderer.sharedMesh.bindposes);
-        //     Debug.Log($"bind pose count: {_skinnedMeshRenderer.sharedMesh.bindposes.Length}");
-
-        //     var boneWeightIndex = 0;
-        //     for (var vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
-        //     {
-        //         var totalWeight = 0f;
-        //         var numberOfBonesForThisVertex = bonesPerVertex[vertexIndex];
-        //         Debug.Log($"vertex index: {vertexIndex}, influence bone num: {numberOfBonesForThisVertex}");
-        //         for (var i = 0; i < numberOfBonesForThisVertex; i++)
-        //         {
-        //             var currentBoneWeight = boneWeights[boneWeightIndex];
-        //             totalWeight += currentBoneWeight.weight;
-        //             Debug.Log($"vertex index: {vertexIndex}, influence bone index: {currentBoneWeight.boneIndex}, bone weight: {currentBoneWeight.weight}");
-        //             if (i > 0)
-        //             {
-        //                 Debug.Assert(boneWeights[boneWeightIndex - 1].weight != currentBoneWeight.weight);
-        //             }
-
-        //             boneWeightIndex++;
-        //         }
-
-        //         Debug.Assert(Mathf.Approximately(1f, totalWeight));
-        //     }
-
-        //     Debug.Log("-------------------");
-        // }
 
         /// <summary>
         /// 
@@ -516,18 +395,7 @@ namespace GPUAnimationBaker
             mesh.vertices = sourceMesh.vertices;
             mesh.uv = sourceMesh.uv;
 
-            // int animationFramesUVChannel = 1;
             int boneWeightsUVChannel = 3; // TODO: const 化してもよいかも
-
-            // // create uv
-            // List<Vector2> refUV = new List<Vector2>();
-            // for (int i = 0; i < sourceMesh.vertexCount; i++)
-            // {
-            //     // refUV.Add(new Vector2(i + 0.5f, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
-            //     // refUV.Add(new Vector2(i, 0) / Mathf.NextPowerOfTwo(sourceMesh.vertexCount));
-            //     refUV.Add(new Vector2(i, 0));
-            // }
-
 
             // create vertex bone weights
             var verticesBoneWeights = GetVerticesBoneWeights(sourceMesh);
@@ -540,39 +408,15 @@ namespace GPUAnimationBaker
                 // index: 0
                 packedBoneWeight.x = verticesBoneWeights[vertexIndex][0].boneIndex;
                 packedBoneWeight.y = verticesBoneWeights[vertexIndex][0].weight;
-                // Debug.Log($"bone -  vertex index: {vertexIndex}, bone index: {packedBoneWeight.x}, weight: {packedBoneWeight.y}");
-                // var accWeight = 0f;
-                // accWeight += packedBoneWeight.y;
                 // index: 1
                 if (verticesBoneWeights[vertexIndex].Count >= 2)
                 {
                     packedBoneWeight.z = verticesBoneWeights[vertexIndex][1].boneIndex;
                     packedBoneWeight.w = verticesBoneWeights[vertexIndex][1].weight;
-                    // Debug.Log($"bone -  vertex index: {vertexIndex}, bone index: {packedBoneWeight.z}, weight: {packedBoneWeight.w}");
-                    // accWeight += packedBoneWeight.w;
                 }
-                // Debug.Log($"acc weight: {accWeight}");
-                // if (accWeight < 0.95f)
-                // {
-                //     Debug.LogWarning("invalid weight");
-                // }
 
                 packedVerticesBoneWeights.Add(packedBoneWeight);
             }
-
-            // for debug
-            // Debug.Log("==========================");
-            // Debug.Log(verticesBoneWeights.Count);
-            // for (int i = 0; i < verticesBoneWeights.Count; i++)
-            // {
-            //     var vertexBoneWeight = verticesBoneWeights[i];
-            //     Debug.Log($"index: {i}, bone weight num: {vertexBoneWeight.Count}");
-            // }
-            // Debug.Log("==========================");
-
-            // default
-            // mesh.SetUVs(uvChannel, refUV);
-            // mesh.SetUVs(animationFramesUVChannel, refUV);
 
             mesh.SetUVs(boneWeightsUVChannel, packedVerticesBoneWeights);
 
@@ -607,19 +451,7 @@ namespace GPUAnimationBaker
             {
                 var bone = bones[i];
 
-                // 1. boneの localmatrix をかけてくパターン
-                // Matrix4x4 resultMatrix = Matrix4x4.TRS(bone.localPosition, bone.localRotation, bone.localScale);
-                // InternalCalculateBonePoseMatrix(bone, ref resultMatrix);
-                // // Debug.Log("result mat");
-                // // Debug.Log(resultMatrix);
-                // resultMatrix = resultMatrix * boneOffsetMatrices[i];
-                // // Debug.Log("result mat * bone offset");
-                // // Debug.Log(resultMatrix);
-                // // var mat = InternalCalculateBonePoseMatrix(bone, ref resultMatrix);
-                // // var mat = bone.localToWorldMatrix;
-                // // var mat = Matrix4x4.TRS(bone.position, bone.rotation, bone.lossyScale);
-
-                // 2. bone world matrix * bone offset matrix
+                // bone world matrix * bone offset matrix
                 var resultMatrix = bone.localToWorldMatrix * boneOffsetMatrices[i];
 
                 bonePoseMatrices.Add(resultMatrix);
@@ -631,34 +463,10 @@ namespace GPUAnimationBaker
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="bone"></param>
-        /// <returns></returns>
-        private static void InternalCalculateBonePoseMatrix(Transform targetBone, ref Matrix4x4 resultMatrix)
-        {
-            // Debug.Log($"target bone: {targetBone}, has parent bone: {!!targetBone.parent}");
-            // Debug.Log(resultMatrix);
-            if (!targetBone.parent)
-            {
-                return;
-            }
-
-            resultMatrix = resultMatrix * Matrix4x4.TRS(
-                               targetBone.parent.localPosition,
-                               targetBone.parent.localRotation,
-                               targetBone.parent.localScale
-                           );
-            // Debug.Log(resultMatrix);
-            InternalCalculateBonePoseMatrix(targetBone.parent, ref resultMatrix);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="pixels"></param>
         /// <returns></returns>
         private static Vector2Int GetTexturePOTRect(int pixels)
         {
-            // Vector2Int rect = new Vector2Int(128, 128);
             Vector2Int rect = new Vector2Int(1, 1);
             bool isCheckW = true;
             while (true)

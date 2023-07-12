@@ -50,11 +50,6 @@ namespace GPUAnimationBaker
             AnimationClip[] animationClips = animator.runtimeAnimatorController.animationClips;
             SkinnedMeshRenderer skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
-            int vertexCount = skinnedMeshRenderer.sharedMesh.vertexCount;
-            int textureWidth = Mathf.NextPowerOfTwo(vertexCount);
-
-            // Mesh mesh = new Mesh();
-
             animator.speed = 0;
 
             int totalFrames = 0;
@@ -64,10 +59,7 @@ namespace GPUAnimationBaker
 
             foreach (AnimationClip animationClip in animationClips)
             {
-                // int frames = Mathf.NextPowerOfTwo((int)(animationClip.length / (1f / (float)_animationFps)));
-                // int currentAnimationClipFrames = Mathf.NextPowerOfTwo((int)(animationClip.length / (1f / (float)_animationFps)));
                 int currentAnimationClipFrames = (int)(animationClip.length / (1f / (float)_animationFps));
-                // List<VertexAttributes> vertexAttributesList = new List<VertexAttributes>();
 
                 totalFrames += currentAnimationClipFrames;
                 totalDuration += animationClip.length;
@@ -91,17 +83,6 @@ namespace GPUAnimationBaker
                 {
                     animator.Play(animationClip.name, 0, (float)i / currentAnimationClipFrames);
                     yield return 0;
-                    // for (int j = 0; j < vertexCount; j++)
-                    // {
-                    //     int vertexIndex = j;
-                    //     _baker.MemoryVertexAttributes(vertexIndex);
-                    // }
-                    // default
-                    // for (int j = 0; j < skinnedMeshRenderer.bones.Length; j++)
-                    // {
-                    //     int boneIndex = j;
-                    //     _baker.MemoryBoneAttributes(boneIndex);
-                    // }
                     _baker.MemoryAllBoneAttributes();
                 }
             } // end foreach
