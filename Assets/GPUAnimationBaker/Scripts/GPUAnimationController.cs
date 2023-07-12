@@ -13,6 +13,13 @@ namespace GPUAnimationBaker
         // ----------------------------------------------------------------------------------
 
         [SerializeField]
+        private bool _initializeOnAwake = false;
+
+        [SerializeField]
+        private Color _instanceBaseColor = Color.white;
+
+        [Space(13)]
+        [SerializeField]
         private MeshRenderer _meshRenderer;
 
         [SerializeField]
@@ -23,9 +30,6 @@ namespace GPUAnimationBaker
         // - srpbatcherがinstancedPropsに対応していない可能性がある = オブジェクトごとにインスタンスを変えることができない？
         // - ので、一旦強制true
         private bool _enabledGPUInstancing = true;
-
-        [SerializeField]
-        private Color _instanceBaseColor = Color.white;
 
         [Space(13)]
         [ReadOnly, SerializeField]
@@ -38,47 +42,12 @@ namespace GPUAnimationBaker
         // unity engine
         // ----------------------------------------------------------------------------------
 
-        // TODO: bakerでaddcomponentした時も呼ばれるのでうまいこと回避したい
-        void Awake()
+        void Start()
         {
-            // _materialInstance = _meshRenderer.sharedMaterial;
-            if (_meshRenderer == null)
+            if (_initializeOnAwake)
             {
-                _meshRenderer = GetComponent<MeshRenderer>();
+                Initialize();
             }
-
-            if (_meshFilter == null)
-            {
-                _meshFilter = GetComponent<MeshFilter>();
-            }
-
-            if (_enabledGPUInstancing)
-            {
-                _materialPropertyBlock = new MaterialPropertyBlock();
-            }
-            else
-            {
-                _materialInstance = _meshRenderer.material;
-                // _meshRenderer.material = _materialInstance;
-            }
-
-            if (_gpuAnimationDataScriptableObject == null)
-            {
-                return;
-            }
-
-            UpdateFrameInfo(_gpuAnimationDataScriptableObject.GPUAnimationFrames[_currentGPUAnimationFrameIndex]);
-            PlayAnimation(_currentGPUAnimationFrameIndex);
-
-            // for debug
-            // Debug.Log(string.Format(
-            //     "[GPUAnimationController] current animation data - initial frame: {0}, duration: {1}, vertex count: {2}, texture width {3}, texture height {4}",
-            //     _currentGPUAnimationInitialFrame,
-            //     _currentGPUAnimationFrameInfo.Frames,
-            //     _gpuAnimationDataScriptableObject.VertexCount,
-            //     _gpuAnimationDataScriptableObject.TextureWidth,
-            //     _gpuAnimationDataScriptableObject.TextureHeight
-            // ));
         }
 
         /// <summary>
@@ -121,10 +90,24 @@ namespace GPUAnimationBaker
             }
         }
 
-        // public void Setup()
-        // {
-        //     _meshRenderer = GetComponent<MeshRenderer>();
-        // }
+        /// <summary>
+        /// editorから呼ばれる想定
+        /// </summary>
+        /// <param name="gpuAnimationDataScriptableObject"></param>
+        public void Setup(GPUAnimationDataScriptableObject gpuAnimationDataScriptableObject)
+        {
+            _gpuAnimationDataScriptableObject = gpuAnimationDataScriptableObject;
+
+            if (_meshRenderer == null)
+            {
+                _meshRenderer = this.gameObject.AddComponent<MeshRenderer>();
+            }
+
+            if (_meshFilter == null)
+            {
+                _meshFilter = this.gameObject.AddComponent<MeshFilter>();
+            }
+        }
 
         /// <summary>
         /// 
@@ -184,25 +167,6 @@ namespace GPUAnimationBaker
             _animationOffset = offset;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="flag"></param>
-        public void SetIsRuntime(bool flag)
-        {
-            _isRuntime = flag;
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="data"></param>
-        public void SetAnimationData(GPUAnimationDataScriptableObject data)
-        {
-            _gpuAnimationDataScriptableObject = data;
-        }
-
         // ----------------------------------------------------------------------------------
         // private 
         // ----------------------------------------------------------------------------------
@@ -218,7 +182,46 @@ namespace GPUAnimationBaker
 
         private float _animationOffset = 0;
 
-        private bool _isRuntime = true;
+        private bool _isRuntime = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void Initialize()
+        {
+            if (_gpuAnimationDataScriptableObject == null)
+            {
+                return;
+            }
+
+            if (!_meshRenderer)
+            {
+                _meshRenderer = GetComponent<MeshRenderer>();
+            }
+
+            if (!_meshFilter)
+            {
+                _meshFilter = GetComponent<MeshFilter>();
+            }
+
+            _meshRenderer.sharedMaterial = _gpuAnimationDataScriptableObject.RuntimeMaterial;
+            _meshFilter.sharedMesh = _gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings[0].LODMesh;
+
+            if (_enabledGPUInstancing)
+            {
+                _materialPropertyBlock = new MaterialPropertyBlock();
+            }
+            else
+            {
+                _materialInstance = _meshRenderer.material;
+                // _meshRenderer.material = _materialInstance;
+            }
+
+            _isRuntime = true;
+
+            UpdateFrameInfo(_gpuAnimationDataScriptableObject.GPUAnimationFrames[_currentGPUAnimationFrameIndex]);
+            PlayAnimation(_currentGPUAnimationFrameIndex);
+        }
 
         /// <summary>
         /// 
@@ -297,7 +300,7 @@ namespace GPUAnimationBaker
             Mesh targetMesh = _gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings[0].LODMesh;
 
             var targetCamera = Camera.main.transform.position;
-            
+
             var sqrDistanceToCamera = (targetCamera - transform.position).sqrMagnitude;
             for (int i = 1; i < _gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings.Count; i++)
             {

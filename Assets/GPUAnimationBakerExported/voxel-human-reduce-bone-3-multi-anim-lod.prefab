@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1577380302688683305}
   - component: {fileID: 5396188145935289586}
-  - component: {fileID: 4725539634665841684}
   - component: {fileID: 1341052060664693507}
+  - component: {fileID: 4725539634665841684}
   m_Layer: 0
   m_Name: voxel-human-reduce-bone-3-multi-anim-lod
   m_TagString: Untagged
@@ -54,7 +54,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cf2596f1f617d47b39b3b2776c103f15, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -76,14 +76,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &4725539634665841684
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3637256934244251239}
-  m_Mesh: {fileID: 4300000, guid: 365aef89307cc47e4bda121a5dfce45b, type: 2}
 --- !u!114 &1341052060664693507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,10 +88,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577e3ac76d1a6bf4fb8289fd56cd609b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _meshRenderer: {fileID: 5396188145935289586}
+  _initializeOnAwake: 0
   _instanceBaseColor: {r: 1, g: 1, b: 1, a: 1}
-  _meshes:
-  - {fileID: 4300000, guid: 365aef89307cc47e4bda121a5dfce45b, type: 2}
-  - {fileID: 4300000, guid: 862c4c2c745454e7cbcaf491f124d4f8, type: 2}
+  _meshRenderer: {fileID: 0}
+  _meshFilter: {fileID: 4725539634665841684}
   _gpuAnimationDataScriptableObject: {fileID: 11400000, guid: 7fadd0be8aab749d6a154ea628152548, type: 2}
   _currentGPUAnimationFrameIndex: 0
+--- !u!33 &4725539634665841684
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3637256934244251239}
+  m_Mesh: {fileID: 0}

@@ -239,14 +239,9 @@ namespace GPUAnimationBaker
 
             GameObject staticMeshGameObject = new GameObject(name);
 
-            staticMeshGameObject.AddComponent<MeshRenderer>().sharedMaterial = runtimeMaterial;
-            staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = _bakedRuntimeMeshes[0]; // 一個目を予めセット
-
             Debug.Log($"[VertexAttributesBaker.SaveAssets] static mesh go: {staticMeshGameObject}");
             GPUAnimationController gpuAnimationController = staticMeshGameObject.AddComponent<GPUAnimationController>();
-            // TODO: init関数にまとめる
-            gpuAnimationController.SetAnimationData(gpuAnimationData);
-            gpuAnimationController.SetIsRuntime(false);
+            gpuAnimationController.Setup(gpuAnimationData);
 
             PrefabUtility.SaveAsPrefabAsset(
                 staticMeshGameObject,
