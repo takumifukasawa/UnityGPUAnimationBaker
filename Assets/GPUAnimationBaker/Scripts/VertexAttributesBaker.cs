@@ -27,17 +27,16 @@ namespace GPUAnimationBaker
         /// </summary>
         /// <param name="skinnedMeshRenderer"></param>
         public VertexAttributesBaker(
-            SkinnedMeshRenderer skinnedMeshRenderer
+            SkinnedMeshRenderer skinnedMeshRenderer,
+            List<Mesh> sourceLODMeshes
         )
         {
             _boneAttributesList = new List<BoneAttributes>();
             _gpuAnimationFrames = new List<GPUAnimationFrame>();
 
             _skinnedMeshRenderer = skinnedMeshRenderer;
-
-            _memoryMesh = new Mesh();
+            _sourceLODMeshes = sourceLODMeshes;
         }
-
 
         /// <summary>
         /// 
@@ -47,8 +46,6 @@ namespace GPUAnimationBaker
         // public void MemoryVertexAttributes(int vertexIndex)
         public void MemoryAllBoneAttributes()
         {
-            _skinnedMeshRenderer.BakeMesh(_memoryMesh);
-
             var boneOffsetMatrices = GetBoneOffsetMatrices(_skinnedMeshRenderer);
             var bones = _skinnedMeshRenderer.bones;
             var poseMatrices = CalculateBonePoseMatrices(bones, boneOffsetMatrices);
@@ -95,10 +92,7 @@ namespace GPUAnimationBaker
         /// <param name="bakerComputeShader"></param>
         /// <param name="frames"></param>
         /// <param name="uvChannel"></param>
-        public void Bake(
-            ComputeShader bakerComputeShader,
-            int frames,
-            int uvChannel)
+        public void Bake(ComputeShader bakerComputeShader, int frames)
         {
             int bakeRowNum = 3;
             
@@ -123,8 +117,6 @@ namespace GPUAnimationBaker
 
             int kernel = bakerComputeShader.FindKernel("CSMain");
 
-            int div = Mathf.FloorToInt(textureWidth / bakeRowNum);
-
             bakerComputeShader.SetInt("BoneCount", boneCount);
             bakerComputeShader.SetInt("TextureWidth", textureWidth);
             bakerComputeShader.SetInt("TextureHeight", textureHeight);
@@ -143,10 +135,13 @@ namespace GPUAnimationBaker
 
             _bakedBonesMap = ConvertRenderTextureToTexture2D(_bakedBonesRenderTexture);
 
-            _runtimeMesh = CreateMeshForGPUAnimation(
-                _skinnedMeshRenderer.sharedMesh,
-                uvChannel
-            );
+            var sourceMeshes = new List<Mesh>();
+            sourceMeshes.Add(_skinnedMeshRenderer.sharedMesh);
+            for (int i = 0; i < _sourceLODMeshes.Count; i++)
+            {
+                sourceMeshes.Add(_sourceLODMeshes[i]);
+            }
+            _bakedRuntimeMeshes = CreateMeshesForGPUAnimation(sourceMeshes);
         }
 
         /// <summary>
@@ -184,7 +179,7 @@ namespace GPUAnimationBaker
                 )
             );
             AssetDatabase.CreateAsset(
-                _runtimeMesh,
+                _bakedRuntimeMeshes[0], // TODO: fix index
                 Path.Combine(
                     subFolderPath,
                     string.Format("{0}.Mesh.asset", name)
@@ -223,7 +218,7 @@ namespace GPUAnimationBaker
             GameObject staticMeshGameObject = new GameObject(name);
 
             staticMeshGameObject.AddComponent<MeshRenderer>().sharedMaterial = runtimeMaterial;
-            staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = _runtimeMesh;
+            staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = _bakedRuntimeMeshes[0]; // TODO: fix index
 
             Debug.Log($"[VertexAttributesBaker.SaveAssets] static mesh go: {staticMeshGameObject}");
             GPUAnimationController gpuAnimationController = staticMeshGameObject.AddComponent<GPUAnimationController>();
@@ -281,11 +276,10 @@ namespace GPUAnimationBaker
 
         private List<GPUAnimationFrame> _gpuAnimationFrames;
 
-        private Mesh _runtimeMesh;
+        private List<Mesh> _bakedRuntimeMeshes = new List<Mesh>();
 
         private SkinnedMeshRenderer _skinnedMeshRenderer;
-
-        private Mesh _memoryMesh;
+        private List<Mesh> _sourceLODMeshes = new List<Mesh>();
 
         /// <summary>
         /// 
@@ -383,13 +377,27 @@ namespace GPUAnimationBaker
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="sourceMeshes"></param>
+        /// <returns></returns>
+        private static List<Mesh> CreateMeshesForGPUAnimation(List<Mesh> sourceMeshes)
+        {
+            var resultMeshes = new List<Mesh>();
+            for (int i = 0; i < sourceMeshes.Count; i++)
+            {
+                var mesh = CreateMeshForGPUAnimation(sourceMeshes[i]);
+                resultMeshes.Add(mesh);
+            }
+
+            return resultMeshes;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="sourceMesh"></param>
         /// <param name="uvChannel"></param>
         /// <returns></returns>
-        private static Mesh CreateMeshForGPUAnimation(
-            Mesh sourceMesh,
-            int uvChannel = 1
-        )
+        private static Mesh CreateMeshForGPUAnimation(Mesh sourceMesh)
         {
             Mesh mesh = new Mesh();
             mesh.vertices = sourceMesh.vertices;

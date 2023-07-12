@@ -143,7 +143,8 @@ MonoBehaviour:
   _bakerComputeShader: {fileID: 7200000, guid: 8a0749b1c2364adda7c8d805aa37d97c, type: 3}
   _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
   _animationFps: 20
-  _uvChannel: 1
+  _bakeLODSkinnedMeshes:
+  - {fileID: 8431863165485341790, guid: 55d57ccf48ec145709494ef7332f5dcd, type: 3}
   _dryRun: 0
 --- !u!1001 &56663218
 PrefabInstance:
@@ -198,7 +199,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b405226f6afb6490d9ecedbaca66d39d, type: 3}
       propertyPath: m_Name
-      value: voxel-human-reduce-bone-3-multi-anim
+      value: voxel-human-reduce-bone-3-multi-anim-lod
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: b405226f6afb6490d9ecedbaca66d39d, type: 3}
       propertyPath: m_Controller
@@ -426,7 +427,7 @@ MonoBehaviour:
   _bakerComputeShader: {fileID: 7200000, guid: 8a0749b1c2364adda7c8d805aa37d97c, type: 3}
   _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
   _animationFps: 20
-  _uvChannel: 1
+  _bakeLODSkinnedMeshes: []
   _dryRun: 0
 --- !u!1001 &158905279
 PrefabInstance:
@@ -775,7 +776,7 @@ MonoBehaviour:
   _bakerComputeShader: {fileID: 7200000, guid: 8a0749b1c2364adda7c8d805aa37d97c, type: 3}
   _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
   _animationFps: 20
-  _uvChannel: 1
+  _bakeLODSkinnedMeshes: []
   _dryRun: 0
 --- !u!1 &863905100
 GameObject:
@@ -1214,7 +1215,7 @@ MonoBehaviour:
   _bakerComputeShader: {fileID: 7200000, guid: 8a0749b1c2364adda7c8d805aa37d97c, type: 3}
   _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
   _animationFps: 20
-  _uvChannel: 1
+  _bakeLODSkinnedMeshes: []
   _dryRun: 0
 --- !u!1 &1608143113
 GameObject:

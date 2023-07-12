@@ -1,13 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using System.Runtime.InteropServices;
-
-#if UNITY_EDITOR
-using UnityEditor;
-using System.IO;
-#endif
 
 namespace GPUAnimationBaker
 {
@@ -18,17 +11,20 @@ namespace GPUAnimationBaker
         // serialize
         // ----------------------------------------------------------------------------------
 
+#if UNITY_EDITOR
         [SerializeField]
         private ComputeShader _bakerComputeShader;
-
+#endif
+        
         [SerializeField]
         private Shader _runtimeShader;
 
         [SerializeField]
         private int _animationFps = 20;
 
+        [Header("LOD Order")]
         [SerializeField]
-        private int _uvChannel = 1;
+        private List<Mesh> _bakeLODSkinnedMeshes;
 
         [Space(13)]
         
@@ -55,7 +51,10 @@ namespace GPUAnimationBaker
             int totalFrames = 0;
             float totalDuration = 0;
 
-            VertexAttributesBaker _baker = new VertexAttributesBaker(skinnedMeshRenderer);
+            VertexAttributesBaker _baker = new VertexAttributesBaker(
+                skinnedMeshRenderer,
+                _bakeLODSkinnedMeshes
+            );
 
             foreach (AnimationClip animationClip in animationClips)
             {
@@ -90,8 +89,7 @@ namespace GPUAnimationBaker
 #if UNITY_EDITOR
             _baker.Bake(
                 _bakerComputeShader,
-                totalFrames,
-                _uvChannel
+                totalFrames
             );
             if (!_dryRun)
             {
