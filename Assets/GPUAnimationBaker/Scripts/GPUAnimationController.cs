@@ -14,7 +14,7 @@ namespace GPUAnimationBaker
 
         [SerializeField]
         private MeshRenderer _meshRenderer;
-
+        
         // [SerializeField]
         // NOTE:
         // - srpbatcherがinstancedPropsに対応していない可能性がある = オブジェクトごとにインスタンスを変えることができない？
@@ -23,6 +23,9 @@ namespace GPUAnimationBaker
 
         [SerializeField]
         private Color _instanceBaseColor = Color.white;
+
+        [SerializeField]
+        private List<Mesh> _meshes;
 
         [Space(13)]
         [ReadOnly, SerializeField]
@@ -223,6 +226,15 @@ namespace GPUAnimationBaker
         public void SetAnimationData(GPUAnimationDataScriptableObject data)
         {
             _gpuAnimationDataScriptableObject = data;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="meshes"></param>
+        public void SetMeshes(List<Mesh> meshes)
+        {
+            _meshes = meshes;
         }
 
         // ----------------------------------------------------------------------------------

@@ -95,7 +95,7 @@ namespace GPUAnimationBaker
         public void Bake(ComputeShader bakerComputeShader, int frames)
         {
             int bakeRowNum = 3;
-            
+
             int boneCount = _skinnedMeshRenderer.bones.Length;
 
             // for bake skinning
@@ -141,6 +141,7 @@ namespace GPUAnimationBaker
             {
                 sourceMeshes.Add(_sourceLODMeshes[i]);
             }
+
             _bakedRuntimeMeshes = CreateMeshesForGPUAnimation(sourceMeshes);
         }
 
@@ -175,21 +176,26 @@ namespace GPUAnimationBaker
                 _bakedBonesMap,
                 Path.Combine(
                     subFolderPath,
-                    string.Format("{0}.BakedBonesMap.asset", name)
+                    $"{name}.BakedBonesMap.asset"
                 )
             );
-            AssetDatabase.CreateAsset(
-                _bakedRuntimeMeshes[0], // TODO: fix index
-                Path.Combine(
-                    subFolderPath,
-                    string.Format("{0}.Mesh.asset", name)
-                )
-            );
+
+            for (int i = 0; i < _bakedRuntimeMeshes.Count; i++)
+            {
+                AssetDatabase.CreateAsset(
+                    _bakedRuntimeMeshes[i],
+                    Path.Combine(
+                        subFolderPath,
+                        $"{name}-LOD{i}.Mesh.asset"
+                    )
+                );
+            }
+
             AssetDatabase.CreateAsset(
                 runtimeMaterial,
                 Path.Combine(
                     subFolderPath,
-                    string.Format("{0}.Material.asset", name)
+                    $"{name}.Material.asset"
                 )
             );
 
@@ -204,6 +210,9 @@ namespace GPUAnimationBaker
                 _skinnedMeshRenderer.sharedMesh.vertexCount,
                 _skinnedMeshRenderer.bones.Length,
                 _gpuAnimationFrames,
+                _bakedRuntimeMeshes,
+                runtimeMaterial,
+                _bakedBonesMap,
                 GetBoneOffsetMatrices(_skinnedMeshRenderer).ToList()
             );
 
@@ -211,19 +220,21 @@ namespace GPUAnimationBaker
                 gpuAnimationData,
                 Path.Combine(
                     subFolderPath,
-                    string.Format("{0}.GPUAnimationData.asset", name)
+                    $"{name}.GPUAnimationData.asset"
                 )
             );
 
             GameObject staticMeshGameObject = new GameObject(name);
 
             staticMeshGameObject.AddComponent<MeshRenderer>().sharedMaterial = runtimeMaterial;
-            staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = _bakedRuntimeMeshes[0]; // TODO: fix index
+            staticMeshGameObject.AddComponent<MeshFilter>().sharedMesh = _bakedRuntimeMeshes[0]; // 一個目を予めセット
 
             Debug.Log($"[VertexAttributesBaker.SaveAssets] static mesh go: {staticMeshGameObject}");
             GPUAnimationController gpuAnimationController = staticMeshGameObject.AddComponent<GPUAnimationController>();
+            // TODO: init関数にまとめる
             gpuAnimationController.SetAnimationData(gpuAnimationData);
             gpuAnimationController.SetIsRuntime(false);
+            gpuAnimationController.SetMeshes(_bakedRuntimeMeshes);
 
             PrefabUtility.SaveAsPrefabAsset(
                 staticMeshGameObject,
@@ -355,7 +366,7 @@ namespace GPUAnimationBaker
         {
             TextureFormat format = TextureFormat.RGBAHalf;
             Texture2D texture = new Texture2D(rt.width, rt.height, format, false);
-            
+
             // st wrap mode
             texture.wrapMode = TextureWrapMode.Clamp;
 
