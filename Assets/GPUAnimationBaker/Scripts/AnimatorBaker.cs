@@ -21,10 +21,13 @@ namespace GPUAnimationBaker
 
         [SerializeField]
         private int _animationFps = 20;
-
+        
         [Header("LOD Order")]
         [SerializeField]
         private List<Mesh> _bakeLODSkinnedMeshes;
+
+        [SerializeField]
+        private float _lodDistanceStep = 10;
 
         [Space(13)]
         
@@ -53,7 +56,8 @@ namespace GPUAnimationBaker
 
             VertexAttributesBaker _baker = new VertexAttributesBaker(
                 skinnedMeshRenderer,
-                _bakeLODSkinnedMeshes
+                _bakeLODSkinnedMeshes,
+                _lodDistanceStep
             );
 
             foreach (AnimationClip animationClip in animationClips)

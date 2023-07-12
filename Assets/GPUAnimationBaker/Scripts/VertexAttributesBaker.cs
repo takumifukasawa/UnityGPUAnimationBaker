@@ -28,7 +28,8 @@ namespace GPUAnimationBaker
         /// <param name="skinnedMeshRenderer"></param>
         public VertexAttributesBaker(
             SkinnedMeshRenderer skinnedMeshRenderer,
-            List<Mesh> sourceLODMeshes
+            List<Mesh> sourceLODMeshes,
+            float lodDistanceStep
         )
         {
             _boneAttributesList = new List<BoneAttributes>();
@@ -36,6 +37,7 @@ namespace GPUAnimationBaker
 
             _skinnedMeshRenderer = skinnedMeshRenderer;
             _sourceLODMeshes = sourceLODMeshes;
+            _lodDistanceStep = lodDistanceStep;
         }
 
         /// <summary>
@@ -92,7 +94,10 @@ namespace GPUAnimationBaker
         /// <param name="bakerComputeShader"></param>
         /// <param name="frames"></param>
         /// <param name="uvChannel"></param>
-        public void Bake(ComputeShader bakerComputeShader, int frames)
+        public void Bake(
+            ComputeShader bakerComputeShader,
+            int frames
+        )
         {
             int bakeRowNum = 3;
 
@@ -201,16 +206,24 @@ namespace GPUAnimationBaker
 
             // ----
 
+            var gpuAnimationLODSettings = new List<GPUAnimationMeshLODSetting>();
+            for (int i = 0; i < _bakedRuntimeMeshes.Count; i++)
+            {
+                gpuAnimationLODSettings.Add(new GPUAnimationMeshLODSetting(
+                    _bakedRuntimeMeshes[i],
+                    i * _lodDistanceStep
+                ));
+            }
+
             GPUAnimationDataScriptableObject gpuAnimationData = GPUAnimationDataScriptableObject.Create(
                 fps,
                 totalDuration,
                 totalFrames,
                 _bakedBonesRenderTexture.width,
                 _bakedBonesRenderTexture.height,
-                _skinnedMeshRenderer.sharedMesh.vertexCount,
                 _skinnedMeshRenderer.bones.Length,
                 _gpuAnimationFrames,
-                _bakedRuntimeMeshes,
+                gpuAnimationLODSettings,
                 runtimeMaterial,
                 _bakedBonesMap,
                 GetBoneOffsetMatrices(_skinnedMeshRenderer).ToList()
@@ -291,6 +304,7 @@ namespace GPUAnimationBaker
 
         private SkinnedMeshRenderer _skinnedMeshRenderer;
         private List<Mesh> _sourceLODMeshes = new List<Mesh>();
+        private float _lodDistanceStep;
 
         /// <summary>
         /// 

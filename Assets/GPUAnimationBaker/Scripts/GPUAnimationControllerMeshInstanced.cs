@@ -174,7 +174,6 @@ namespace GPUAnimationBaker
             }
 
             _meshRenderer.GetPropertyBlock(_materialPropertyBlock);
-            _materialPropertyBlock.SetFloat("_VertexCount", (float)_gpuAnimationDataScriptableObject.VertexCount);
             _materialPropertyBlock.SetFloat("_AnimationSpeed", _animationSpeed);
             _materialPropertyBlock.SetFloat("_BakedAnimationTimeOffset", _animationOffset);
             _materialPropertyBlock.SetFloat("_BakedAnimationFPS", (float)_gpuAnimationDataScriptableObject.FPS);

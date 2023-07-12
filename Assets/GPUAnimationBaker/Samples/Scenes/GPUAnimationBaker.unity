@@ -145,6 +145,7 @@ MonoBehaviour:
   _animationFps: 20
   _bakeLODSkinnedMeshes:
   - {fileID: 8431863165485341790, guid: 55d57ccf48ec145709494ef7332f5dcd, type: 3}
+  _lodDistanceStep: 10
   _dryRun: 0
 --- !u!1001 &56663218
 PrefabInstance:
@@ -428,6 +429,7 @@ MonoBehaviour:
   _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
   _animationFps: 20
   _bakeLODSkinnedMeshes: []
+  _lodDistanceStep: 10
   _dryRun: 0
 --- !u!1001 &158905279
 PrefabInstance:
@@ -601,6 +603,63 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &568790800
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_RootOrder
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577380302688683305, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3637256934244251239, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
+      propertyPath: m_Name
+      value: voxel-human-reduce-bone-3-multi-anim-lod (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 50c691ca644d246ba91f7ec3e98a17a6, type: 3}
 --- !u!1001 &625219614
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -777,6 +836,7 @@ MonoBehaviour:
   _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
   _animationFps: 20
   _bakeLODSkinnedMeshes: []
+  _lodDistanceStep: 10
   _dryRun: 0
 --- !u!1 &863905100
 GameObject:
@@ -1216,6 +1276,7 @@ MonoBehaviour:
   _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
   _animationFps: 20
   _bakeLODSkinnedMeshes: []
+  _lodDistanceStep: 10
   _dryRun: 0
 --- !u!1 &1608143113
 GameObject:
