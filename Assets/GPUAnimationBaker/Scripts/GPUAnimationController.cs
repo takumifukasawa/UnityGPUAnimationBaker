@@ -14,7 +14,10 @@ namespace GPUAnimationBaker
 
         [SerializeField]
         private MeshRenderer _meshRenderer;
-        
+
+        [SerializeField]
+        private MeshFilter _meshFilter;
+
         // [SerializeField]
         // NOTE:
         // - srpbatcherがinstancedPropsに対応していない可能性がある = オブジェクトごとにインスタンスを変えることができない？
@@ -23,9 +26,6 @@ namespace GPUAnimationBaker
 
         [SerializeField]
         private Color _instanceBaseColor = Color.white;
-
-        [SerializeField]
-        private List<Mesh> _meshes;
 
         [Space(13)]
         [ReadOnly, SerializeField]
@@ -45,6 +45,11 @@ namespace GPUAnimationBaker
             if (_meshRenderer == null)
             {
                 _meshRenderer = GetComponent<MeshRenderer>();
+            }
+
+            if (_meshFilter == null)
+            {
+                _meshFilter = GetComponent<MeshFilter>();
             }
 
             if (_enabledGPUInstancing)
@@ -86,38 +91,8 @@ namespace GPUAnimationBaker
                 return;
             }
 
-            if (_enabledGPUInstancing)
-            {
-                _meshRenderer.GetPropertyBlock(_materialPropertyBlock);
-                _materialPropertyBlock.SetFloat("_BoneCount", _gpuAnimationDataScriptableObject.BoneCount);
-                _materialPropertyBlock.SetFloat("_AnimationSpeed", _animationSpeed);
-                _materialPropertyBlock.SetFloat("_BakedAnimationTimeOffset", _animationOffset);
-                _materialPropertyBlock.SetFloat("_BakedAnimationFPS", (float)_gpuAnimationDataScriptableObject.FPS);
-                _materialPropertyBlock.SetFloat("_BakedAnimationTotalDuration", _gpuAnimationDataScriptableObject.TotalDuration);
-                _materialPropertyBlock.SetFloat("_BakedAnimationTotalFrames", _gpuAnimationDataScriptableObject.TotalFrames);
-                _materialPropertyBlock.SetFloat("_BakedCurrentAnimationInitialFrame", _currentGPUAnimationInitialFrame);
-                _materialPropertyBlock.SetFloat("_BakedCurrentAnimationFrames", _currentGPUAnimationFrameInfo.Frames);
-                _materialPropertyBlock.SetFloat("_BakedTextureWidth", (float)_gpuAnimationDataScriptableObject.TextureWidth);
-                _materialPropertyBlock.SetFloat("_BakedTextureHeight", (float)_gpuAnimationDataScriptableObject.TextureHeight);
-                _materialPropertyBlock.SetColor("_CustomColor", _instanceBaseColor);
-                _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
-            }
-            else
-            {
-                // _materialInstance.SetFloat("_VertexCount", (float)_gpuAnimationDataScriptableObject.VertexCount);
-                _materialInstance.SetFloat("_BoneCount", _gpuAnimationDataScriptableObject.BoneCount);
-                _materialInstance.SetFloat("_AnimationSpeed", _animationSpeed);
-                _materialInstance.SetFloat("_BakedAnimationTimeOffset", _animationOffset);
-                _materialInstance.SetFloat("_BakedAnimationFPS", (float)_gpuAnimationDataScriptableObject.FPS);
-                _materialInstance.SetFloat("_BakedAnimationTotalDuration", _gpuAnimationDataScriptableObject.TotalDuration);
-                _materialInstance.SetFloat("_BakedAnimationTotalFrames", _gpuAnimationDataScriptableObject.TotalFrames);
-                _materialInstance.SetFloat("_BakedCurrentAnimationInitialFrame", _currentGPUAnimationInitialFrame);
-                _materialInstance.SetFloat("_BakedCurrentAnimationFrames", _currentGPUAnimationFrameInfo.Frames);
-                _materialInstance.SetFloat("_BakedTextureWidth", (float)_gpuAnimationDataScriptableObject.TextureWidth);
-                _materialInstance.SetFloat("_BakedTextureHeight", (float)_gpuAnimationDataScriptableObject.TextureHeight);
-                _materialInstance.SetColor("_CustomColor", _instanceBaseColor);
-                // Debug.Log(_gpuAnimationDataScriptableObject.TotalDuration);
-            }
+            UpdateMaterial();
+            UpdateLODMesh();
         }
 
         // ----------------------------------------------------------------------------------
@@ -228,15 +203,6 @@ namespace GPUAnimationBaker
             _gpuAnimationDataScriptableObject = data;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="meshes"></param>
-        public void SetMeshes(List<Mesh> meshes)
-        {
-            _meshes = meshes;
-        }
-
         // ----------------------------------------------------------------------------------
         // private 
         // ----------------------------------------------------------------------------------
@@ -270,6 +236,86 @@ namespace GPUAnimationBaker
                 }
                 // TODO: -1 の必要ある？
                 // _currentGPUAnimationInitialFrame -= 1;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void UpdateMaterial()
+        {
+            if (_enabledGPUInstancing)
+            {
+                _meshRenderer.GetPropertyBlock(_materialPropertyBlock);
+                _materialPropertyBlock.SetFloat("_BoneCount", _gpuAnimationDataScriptableObject.BoneCount);
+                _materialPropertyBlock.SetFloat("_AnimationSpeed", _animationSpeed);
+                _materialPropertyBlock.SetFloat("_BakedAnimationTimeOffset", _animationOffset);
+                _materialPropertyBlock.SetFloat("_BakedAnimationFPS", (float)_gpuAnimationDataScriptableObject.FPS);
+                _materialPropertyBlock.SetFloat("_BakedAnimationTotalDuration", _gpuAnimationDataScriptableObject.TotalDuration);
+                _materialPropertyBlock.SetFloat("_BakedAnimationTotalFrames", _gpuAnimationDataScriptableObject.TotalFrames);
+                _materialPropertyBlock.SetFloat("_BakedCurrentAnimationInitialFrame", _currentGPUAnimationInitialFrame);
+                _materialPropertyBlock.SetFloat("_BakedCurrentAnimationFrames", _currentGPUAnimationFrameInfo.Frames);
+                _materialPropertyBlock.SetFloat("_BakedTextureWidth", (float)_gpuAnimationDataScriptableObject.TextureWidth);
+                _materialPropertyBlock.SetFloat("_BakedTextureHeight", (float)_gpuAnimationDataScriptableObject.TextureHeight);
+                _materialPropertyBlock.SetColor("_CustomColor", _instanceBaseColor);
+                _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
+            }
+            else
+            {
+                // _materialInstance.SetFloat("_VertexCount", (float)_gpuAnimationDataScriptableObject.VertexCount);
+                _materialInstance.SetFloat("_BoneCount", _gpuAnimationDataScriptableObject.BoneCount);
+                _materialInstance.SetFloat("_AnimationSpeed", _animationSpeed);
+                _materialInstance.SetFloat("_BakedAnimationTimeOffset", _animationOffset);
+                _materialInstance.SetFloat("_BakedAnimationFPS", (float)_gpuAnimationDataScriptableObject.FPS);
+                _materialInstance.SetFloat("_BakedAnimationTotalDuration", _gpuAnimationDataScriptableObject.TotalDuration);
+                _materialInstance.SetFloat("_BakedAnimationTotalFrames", _gpuAnimationDataScriptableObject.TotalFrames);
+                _materialInstance.SetFloat("_BakedCurrentAnimationInitialFrame", _currentGPUAnimationInitialFrame);
+                _materialInstance.SetFloat("_BakedCurrentAnimationFrames", _currentGPUAnimationFrameInfo.Frames);
+                _materialInstance.SetFloat("_BakedTextureWidth", (float)_gpuAnimationDataScriptableObject.TextureWidth);
+                _materialInstance.SetFloat("_BakedTextureHeight", (float)_gpuAnimationDataScriptableObject.TextureHeight);
+                _materialInstance.SetColor("_CustomColor", _instanceBaseColor);
+                // Debug.Log(_gpuAnimationDataScriptableObject.TotalDuration);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void UpdateLODMesh()
+        {
+            if (!Camera.main)
+            {
+                return;
+            }
+
+            // LODなし
+            if (_gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings.Count < 2)
+            {
+                return;
+            }
+
+            Mesh targetMesh = _gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings[0].LODMesh;
+
+            var targetCamera = Camera.main.transform.position;
+            
+            var sqrDistanceToCamera = (targetCamera - transform.position).sqrMagnitude;
+            for (int i = 1; i < _gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings.Count; i++)
+            {
+                var td = _gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings[i].ThresholdDistance;
+                var sqrThreshold = td * td;
+                if (sqrDistanceToCamera > sqrThreshold)
+                {
+                    targetMesh = _gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings[i].LODMesh;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (_meshFilter.sharedMesh != targetMesh)
+            {
+                _meshFilter.sharedMesh = targetMesh;
             }
         }
     }

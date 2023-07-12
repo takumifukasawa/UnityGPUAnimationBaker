@@ -247,7 +247,6 @@ namespace GPUAnimationBaker
             // TODO: init関数にまとめる
             gpuAnimationController.SetAnimationData(gpuAnimationData);
             gpuAnimationController.SetIsRuntime(false);
-            gpuAnimationController.SetMeshes(_bakedRuntimeMeshes);
 
             PrefabUtility.SaveAsPrefabAsset(
                 staticMeshGameObject,
