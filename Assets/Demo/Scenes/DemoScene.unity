@@ -1585,7 +1585,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cbe79c7d91a461da530c798f73f227b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gpuAnimationControllerPrefab: {fileID: 8015330692060141335, guid: b4c57d9735dd9449a895e73f17f4130c, type: 3}
+  _gpuAnimationControllerPrefab: {fileID: 8015330692060141335, guid: ea5d5339c61634d35b5d5023fea91a22, type: 3}
   _spawnAnchor: {fileID: 595312341}
   _spawnNumSlider: {fileID: 631243019}
   _spawnNumText: {fileID: 1930971314}

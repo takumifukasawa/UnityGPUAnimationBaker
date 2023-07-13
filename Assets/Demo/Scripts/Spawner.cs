@@ -8,9 +8,6 @@ namespace Demo
     public class Spawner : MonoBehaviour
     {
         [SerializeField]
-        private GPUAnimationController _gpuAnimationControllerPrefab;
-
-        [SerializeField]
         private Transform _spawnAnchor;
 
         [SerializeField]
@@ -24,6 +21,9 @@ namespace Demo
 
         [Space(13)]
         [Header("Settings")]
+        [SerializeField]
+        private GPUAnimationController _gpuAnimationControllerPrefab;
+
         [SerializeField]
         private int _initalSpawnNum = 100;
 
