@@ -11,6 +11,9 @@ namespace Demo
         private Transform _spawnAnchor;
 
         [SerializeField]
+        private Toggle _physicsToggle;
+
+        [SerializeField]
         private Slider _spawnNumSlider;
 
         [SerializeField]
@@ -22,7 +25,7 @@ namespace Demo
         [Space(13)]
         [Header("Settings")]
         [SerializeField]
-        private GPUAnimationController _gpuAnimationControllerPrefab;
+        private Character _characterPrefab;
 
         [SerializeField]
         private int _initalSpawnNum = 100;
@@ -56,16 +59,16 @@ namespace Demo
                 _spawnNum = (Mathf.FloorToInt(value));
                 _spawnNumText.text = _spawnNum.ToString();
             });
-            _respawnButton.onClick.AddListener(() => { Respawn(_spawnNum); });
+            _respawnButton.onClick.AddListener(() => { Respawn(_spawnNum, _physicsToggle.isOn); });
 
-            Respawn(_spawnNum);
+            Respawn(_spawnNum, _physicsToggle.isOn);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="spawnNum"></param>
-        void Respawn(int spawnNum)
+        void Respawn(int spawnNum, bool enabledPhysics)
         {
             foreach (Transform child in _spawnAnchor)
             {
@@ -74,7 +77,8 @@ namespace Demo
 
             for (int i = 0; i < spawnNum; i++)
             {
-                var obj = Instantiate(_gpuAnimationControllerPrefab);
+                var obj = Instantiate(_characterPrefab);
+                obj.Initialize(enabledPhysics);
                 var p = new Vector3(
                     Random.Range(_spawnMinPosition.x, _spawnMaxPosition.x),
                     Random.Range(_spawnMinPosition.y, _spawnMaxPosition.y),

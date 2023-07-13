@@ -14,6 +14,9 @@ namespace Demo
         private Rigidbody _rigidbody;
 
         [SerializeField]
+        private Collider _collider;
+
+        [SerializeField]
         private float _moveMinSpeed = 0.05f;
 
         [SerializeField]
@@ -42,8 +45,16 @@ namespace Demo
 
         private Vector3 _forward;
 
-        void Start()
+        private bool _isInitialized = false;
+
+        public void Initialize(bool enabledPhysics)
         {
+            if (!enabledPhysics)
+            {
+                Destroy(_rigidbody);
+                _collider.isTrigger = true;
+            }
+
             UpdateInterval();
             if (Random.Range(0f, 1f) > 0.5f)
             {
@@ -53,10 +64,17 @@ namespace Demo
             {
                 Run();
             }
+
+            _isInitialized = true;
         }
 
         void Update()
         {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
             if (Time.time - _lastToggleStateTime > _currentToggleStateInterval)
             {
                 UpdateInterval();
