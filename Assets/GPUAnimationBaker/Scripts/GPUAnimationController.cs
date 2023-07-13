@@ -18,6 +18,9 @@ namespace GPUAnimationBaker
         [SerializeField]
         private Color _instanceBaseColor = Color.white;
 
+        [SerializeField]
+        private bool _enabledLOD = true;
+
         [Space(13)]
         [SerializeField]
         private MeshRenderer _meshRenderer;
@@ -219,6 +222,12 @@ namespace GPUAnimationBaker
 
             _isRuntime = true;
 
+            // メッシュが1個しかないときはLODを強制的に無効
+            if (_gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings.Count < 2)
+            {
+                _enabledLOD = false;
+            }
+
             UpdateFrameInfo(_gpuAnimationDataScriptableObject.GPUAnimationFrames[_currentGPUAnimationFrameIndex]);
             PlayAnimation(_currentGPUAnimationFrameIndex);
         }
@@ -292,7 +301,7 @@ namespace GPUAnimationBaker
             }
 
             // LODなし
-            if (_gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings.Count < 2)
+            if (!_enabledLOD)
             {
                 return;
             }
