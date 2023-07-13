@@ -88,8 +88,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577e3ac76d1a6bf4fb8289fd56cd609b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initializeOnAwake: 0
+  _initializeOnAwake: 1
   _instanceBaseColor: {r: 1, g: 1, b: 1, a: 1}
+  _enabledLOD: 1
   _meshRenderer: {fileID: 0}
   _meshFilter: {fileID: 2691845836389322969}
   _gpuAnimationDataScriptableObject: {fileID: 11400000, guid: 65af004af22244e2fb5413e573dc9014, type: 2}
