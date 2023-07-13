@@ -34,10 +34,10 @@ namespace Demo
         private Vector3 _spawnMaxPosition = Vector3.one;
 
         [SerializeField]
-        private Vector3 _spawnMinScale = Vector3.one;
+        private float _spawnMinScale = 0.8f;
 
         [SerializeField]
-        private Vector3 _spawnMaxScale = Vector3.one;
+        private float _spawnMaxScale = 1f;
 
         private int _spawnNum;
 
@@ -80,11 +80,8 @@ namespace Demo
                     Random.Range(_spawnMinPosition.y, _spawnMaxPosition.y),
                     Random.Range(_spawnMinPosition.z, _spawnMaxPosition.z)
                 );
-                var s = new Vector3(
-                    Random.Range(_spawnMinScale.x, _spawnMaxScale.x),
-                    Random.Range(_spawnMinScale.y, _spawnMaxScale.y),
-                    Random.Range(_spawnMinScale.z, _spawnMaxScale.z)
-                );
+                var ss = Random.Range(_spawnMinScale, _spawnMaxScale);
+                var s = new Vector3(ss, ss, ss);
                 obj.transform.parent = _spawnAnchor;
                 obj.transform.position = p;
                 obj.transform.localScale = s;
