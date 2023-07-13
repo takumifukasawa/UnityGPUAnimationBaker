@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.64110655, g: 0.64020884, b: 0.6467832, a: 1}
+  m_IndirectSpecularColor: {r: 0.53434706, g: 0.56640327, b: 0.6033782, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1637,7 +1637,7 @@ MonoBehaviour:
   _spawnNumText: {fileID: 1930971314}
   _respawnButton: {fileID: 111037634}
   _gpuAnimationControllerPrefab: {fileID: 8015330692060141335, guid: ea5d5339c61634d35b5d5023fea91a22, type: 3}
-  _initalSpawnNum: 100
+  _initalSpawnNum: 10
   _spawnMinPosition: {x: -10, y: 0, z: -10}
   _spawnMaxPosition: {x: 10, y: 0, z: 10}
   _spawnMinScale: 0.4
