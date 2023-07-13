@@ -25,6 +25,14 @@ namespace Demo
         [SerializeField]
         private float _toggleStateMaxInterval = 1.8f;
 
+        [Space(13)]
+        [Header("case: moving by transform")]
+        [SerializeField]
+        private Vector3 _movableMinArea;
+
+        [SerializeField]
+        private Vector3 _movableMaxArea;
+
         private float _currentToggleStateInterval;
 
         private bool _isMoving = false;
@@ -55,16 +63,34 @@ namespace Demo
                 ToggleState();
             }
 
-            if (_isMoving)
+            if (_rigidbody)
             {
-                _rigidbody.velocity = _forward * _currentMoveSpeed;
-                Quaternion rot = Quaternion.LookRotation(_forward, Vector3.up);
-                _rigidbody.MoveRotation(rot);
+                if (_isMoving)
+                {
+                    _rigidbody.velocity = _forward * _currentMoveSpeed;
+                    Quaternion rot = Quaternion.LookRotation(_forward, Vector3.up);
+                    _rigidbody.MoveRotation(rot);
+                }
+                else
+                {
+                    _rigidbody.velocity = Vector3.zero;
+                    _rigidbody.angularVelocity = Vector3.zero;
+                }
             }
             else
             {
-                _rigidbody.velocity = Vector3.zero;
-                _rigidbody.angularVelocity = Vector3.zero;
+                if (_isMoving)
+                {
+                    var p = transform.position;
+                    transform.position = p + _forward * _currentMoveSpeed * Time.deltaTime;
+                    transform.position = new Vector3(
+                        Mathf.Clamp(transform.position.x, _movableMinArea.x, _movableMaxArea.x),
+                        Mathf.Clamp(transform.position.y, _movableMinArea.y, _movableMaxArea.y),
+                        Mathf.Clamp(transform.position.z, _movableMinArea.z, _movableMaxArea.z)
+                    );
+                    Quaternion rot = Quaternion.LookRotation(_forward, Vector3.up);
+                    transform.rotation = rot;
+                }
             }
         }
 
