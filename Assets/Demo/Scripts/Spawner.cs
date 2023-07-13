@@ -11,13 +11,16 @@ namespace Demo
         private Transform _spawnAnchor;
 
         [SerializeField]
-        private Toggle _physicsToggle;
-
-        [SerializeField]
         private Slider _spawnNumSlider;
 
         [SerializeField]
         private TextMeshProUGUI _spawnNumText;
+
+        [SerializeField]
+        private Toggle _physicsToggle;
+
+        [SerializeField]
+        private Toggle _contactToggle;
 
         [SerializeField]
         private Button _respawnButton;
@@ -59,16 +62,16 @@ namespace Demo
                 _spawnNum = (Mathf.FloorToInt(value));
                 _spawnNumText.text = _spawnNum.ToString();
             });
-            _respawnButton.onClick.AddListener(() => { Respawn(_spawnNum, _physicsToggle.isOn); });
+            _respawnButton.onClick.AddListener(() => { Respawn(_spawnNum, _physicsToggle.isOn, _contactToggle.isOn); });
 
-            Respawn(_spawnNum, _physicsToggle.isOn);
+            Respawn(_spawnNum, _physicsToggle.isOn, _contactToggle.isOn);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="spawnNum"></param>
-        void Respawn(int spawnNum, bool enabledPhysics)
+        void Respawn(int spawnNum, bool enabledPhysics, bool enabledContact)
         {
             foreach (Transform child in _spawnAnchor)
             {
@@ -89,6 +92,16 @@ namespace Demo
                 obj.transform.parent = _spawnAnchor;
                 obj.transform.position = p;
                 obj.transform.localScale = s;
+            }
+
+            var layer = LayerMask.NameToLayer("Character");
+            if (enabledContact)
+            {
+                Physics.IgnoreLayerCollision(layer, layer, false);
+            }
+            else
+            {
+                Physics.IgnoreLayerCollision(layer, layer, true);
             }
         }
     }
