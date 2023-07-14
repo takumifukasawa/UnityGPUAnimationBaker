@@ -35,7 +35,7 @@ namespace GPUAnimationBaker
         private bool _enabledGPUInstancing = true;
 
         [Space(13)]
-        [ReadOnly, SerializeField]
+        [SerializeField]
         private GPUAnimationDataScriptableObject _gpuAnimationDataScriptableObject;
 
         [SerializeField, HideInInspector]
@@ -115,6 +115,51 @@ namespace GPUAnimationBaker
         /// <summary>
         /// 
         /// </summary>
+        public void Initialize()
+        {
+            if (_gpuAnimationDataScriptableObject == null)
+            {
+                return;
+            }
+
+            if (!_meshRenderer)
+            {
+                _meshRenderer = GetComponent<MeshRenderer>();
+            }
+
+            if (!_meshFilter)
+            {
+                _meshFilter = GetComponent<MeshFilter>();
+            }
+
+            _meshRenderer.sharedMaterial = _gpuAnimationDataScriptableObject.RuntimeMaterial;
+            _meshFilter.sharedMesh = _gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings[0].LODMesh;
+
+            if (_enabledGPUInstancing)
+            {
+                _materialPropertyBlock = new MaterialPropertyBlock();
+            }
+            else
+            {
+                _materialInstance = _meshRenderer.material;
+                // _meshRenderer.material = _materialInstance;
+            }
+
+            _isRuntime = true;
+
+            // メッシュが1個しかないときはLODを強制的に無効
+            if (_gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings.Count < 2)
+            {
+                _enabledLOD = false;
+            }
+
+            UpdateFrameInfo(_gpuAnimationDataScriptableObject.GPUAnimationFrames[_currentGPUAnimationFrameIndex]);
+            PlayAnimation(_currentGPUAnimationFrameIndex);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="name"></param>
         public void PlayAnimation(string name)
         {
@@ -170,6 +215,44 @@ namespace GPUAnimationBaker
             _animationOffset = offset;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void UpdateMaterialFloat(string key, float value)
+        {
+            if (_enabledGPUInstancing)
+            {
+                _meshRenderer.GetPropertyBlock(_materialPropertyBlock);
+                _materialPropertyBlock.SetFloat(key, value);
+                _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
+            }
+            else
+            {
+                _materialInstance.SetFloat(key, value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void UpdateMaterialVector(string key, Vector4 value)
+        {
+            if (_enabledGPUInstancing)
+            {
+                _meshRenderer.GetPropertyBlock(_materialPropertyBlock);
+                _materialPropertyBlock.SetVector(key, value);
+                _meshRenderer.SetPropertyBlock(_materialPropertyBlock);
+            }
+            else
+            {
+                _materialInstance.SetVector(key, value);
+            }
+        }
+
         // ----------------------------------------------------------------------------------
         // private 
         // ----------------------------------------------------------------------------------
@@ -187,50 +270,6 @@ namespace GPUAnimationBaker
 
         private bool _isRuntime = false;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Initialize()
-        {
-            if (_gpuAnimationDataScriptableObject == null)
-            {
-                return;
-            }
-
-            if (!_meshRenderer)
-            {
-                _meshRenderer = GetComponent<MeshRenderer>();
-            }
-
-            if (!_meshFilter)
-            {
-                _meshFilter = GetComponent<MeshFilter>();
-            }
-
-            _meshRenderer.sharedMaterial = _gpuAnimationDataScriptableObject.RuntimeMaterial;
-            _meshFilter.sharedMesh = _gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings[0].LODMesh;
-
-            if (_enabledGPUInstancing)
-            {
-                _materialPropertyBlock = new MaterialPropertyBlock();
-            }
-            else
-            {
-                _materialInstance = _meshRenderer.material;
-                // _meshRenderer.material = _materialInstance;
-            }
-
-            _isRuntime = true;
-
-            // メッシュが1個しかないときはLODを強制的に無効
-            if (_gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings.Count < 2)
-            {
-                _enabledLOD = false;
-            }
-
-            UpdateFrameInfo(_gpuAnimationDataScriptableObject.GPUAnimationFrames[_currentGPUAnimationFrameIndex]);
-            PlayAnimation(_currentGPUAnimationFrameIndex);
-        }
 
         /// <summary>
         /// 

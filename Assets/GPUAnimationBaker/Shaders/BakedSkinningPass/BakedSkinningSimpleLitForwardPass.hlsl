@@ -224,6 +224,28 @@ Varyings LitPassVertexSimple(Attributes input)
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
 
+    // TODO: 4色のカラーパレットを使う場合、uvをoverride。基本的にはなくてよいので別シェーダーにする
+    // TODO: 分岐を回避したい(パレットが増えても大丈夫なようにしたい
+    float4 instanceColorPalette = UNITY_ACCESS_INSTANCED_PROP(Props, _ColorPalette);
+    // output.uv = input.texcoord.xy;
+    float threshold = .125 * .5;
+    if (abs(output.uv.x - .125) < threshold)
+    {
+        output.uv.y = instanceColorPalette.x;
+    }
+    else if (abs(output.uv.x - .375) < threshold)
+    {
+        output.uv.y = instanceColorPalette.y;
+    }
+    else if (abs(output.uv.x - .625) < threshold)
+    {
+        output.uv.y = instanceColorPalette.z;
+    }
+    else
+    {
+        output.uv.y = instanceColorPalette.w;
+    }
+
     output.normalWS = NormalizeNormalPerVertex(normalInput.normalWS);
 
     // ORIGINAL
@@ -276,6 +298,7 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     // _BaseColor *= float4(1., 1., 1., 1.);
     // _BaseColor *= _CustomColor;
 
+
     // ----------------------------------------------------------------
     // CUSTOM_LINE_END
     // ----------------------------------------------------------------
@@ -294,19 +317,6 @@ half4 LitPassFragmentSimple(Varyings input) : SV_Target
     half4 color = UniversalFragmentBlinnPhong(inputData, surfaceData);
     color.rgb = MixFog(color.rgb, inputData.fogCoord);
     color.a = OutputAlpha(color.a, _Surface);
-
-    // float2 d = CalcBoneUV(input.boneWeights.x, 0.);
-    // color.rgba = half4(input.boneWeights.w, 0, 0, 1);
-    // color.rgba = half4(d.y * 128., 0, 0, 1);
-    // color.rgba = half4(1, 0, 0, 1);
-
-    // float4 l = tex2Dlod(_BakedBonesMap, float4(d, 0, 0));
-    // float4 l = tex2D(_BakedBonesMap, float2(.1, .1));
-    // float4 l = tex2D(_BakedBonesMap, input.uv);
-    // color.rgba = half4(l.xyz, 1.);
-    // color.rgba = half4(input.boneWeights.www, 1.);
-    // color.rgba = half4(input.uv, 1, 1.);
-
 
     return color;
 }

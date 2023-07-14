@@ -40,6 +40,7 @@ CBUFFER_END
 // ----------------------------------------------------------------
 UNITY_INSTANCING_BUFFER_START(Props)
     UNITY_DEFINE_INSTANCED_PROP(half4, _CustomColor)
+    UNITY_DEFINE_INSTANCED_PROP(half4, _ColorPalette)
     UNITY_DEFINE_INSTANCED_PROP(float, _BoneCount)
     UNITY_DEFINE_INSTANCED_PROP(float, _AnimationSpeed)
     UNITY_DEFINE_INSTANCED_PROP(float, _BakedTextureWidth)

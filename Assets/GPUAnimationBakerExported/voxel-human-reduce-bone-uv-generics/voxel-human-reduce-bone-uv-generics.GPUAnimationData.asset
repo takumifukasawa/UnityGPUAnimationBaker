@@ -15,6 +15,8 @@ MonoBehaviour:
   GPUAnimationMeshLODSettings:
   - LODMesh: {fileID: 4300000, guid: 92befc4bc37134c0fbf56a3fc494ccb0, type: 2}
     ThresholdDistance: 0
+  - LODMesh: {fileID: 4300000, guid: a53ab23fa67d04ec9835cd6e7dc4031c, type: 2}
+    ThresholdDistance: 10
   FPS: 15
   TotalDuration: 0.8
   TotalFrames: 12

@@ -48,6 +48,10 @@ namespace Demo
 
         private bool _isInitialized = false;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enabledPhysics"></param>
         public void Initialize(bool enabledPhysics)
         {
             _gpuAnimationController.Initialize();
@@ -59,6 +63,7 @@ namespace Demo
             }
 
             UpdateInterval();
+
             if (Random.Range(0f, 1f) > 0.5f)
             {
                 Idle();
@@ -68,9 +73,21 @@ namespace Demo
                 Run();
             }
 
+            var colorPalette = new Vector4(
+                    // .125f, .125f, .125f, .125f
+                (float)Random.Range(0, 4) / 4f + 0.125f,
+                (float)Random.Range(0, 4) / 4f + 0.125f,
+                (float)Random.Range(0, 4) / 4f + 0.125f,
+                (float)Random.Range(0, 4) / 4f + 0.125f
+            );
+            _gpuAnimationController.UpdateMaterialVector("_ColorPalette", colorPalette);
+
             _isInitialized = true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         void Update()
         {
             if (!_isInitialized)

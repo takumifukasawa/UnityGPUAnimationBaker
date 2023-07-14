@@ -2353,8 +2353,8 @@ MonoBehaviour:
   _physicsToggle: {fileID: 1322465850}
   _contactToggle: {fileID: 734936631}
   _respawnButton: {fileID: 111037634}
-  _characterPrefab: {fileID: 6501283395552503821, guid: f65835cab58fa4696b8bf3e952dd4636, type: 3}
-  _initalSpawnNum: 10
+  _characterPrefab: {fileID: 8113881098824753281, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+  _initalSpawnNum: 1
   _spawnMinPosition: {x: -10, y: 0, z: -10}
   _spawnMaxPosition: {x: 10, y: 0, z: 10}
   _spawnMinScale: 0.4
