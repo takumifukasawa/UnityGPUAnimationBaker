@@ -16,7 +16,7 @@ MonoBehaviour:
   - LODMesh: {fileID: 4300000, guid: 716ca62d6fd4f44b78d8f4d2551f4e21, type: 2}
     ThresholdDistance: 0
   - LODMesh: {fileID: 4300000, guid: 180da13f7dacc4deb9e67fdcc97b24ac, type: 2}
-    ThresholdDistance: 10
+    ThresholdDistance: 27.5
   FPS: 60
   TotalDuration: 0.8
   TotalFrames: 48
