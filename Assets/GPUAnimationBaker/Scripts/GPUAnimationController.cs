@@ -190,7 +190,7 @@ namespace GPUAnimationBaker
         /// <summary>
         /// 
         /// </summary>
-        void Initialize()
+        public void Initialize()
         {
             if (_gpuAnimationDataScriptableObject == null)
             {

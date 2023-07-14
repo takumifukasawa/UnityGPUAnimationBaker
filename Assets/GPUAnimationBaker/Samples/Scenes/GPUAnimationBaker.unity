@@ -271,6 +271,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: voxel-human-reduce-bone-uv-lod0
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 207a3688b23d64e89b9cc069ee142fb9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 207a3688b23d64e89b9cc069ee142fb9, type: 3}
       propertyPath: m_Controller
       value: 
@@ -751,6 +755,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: voxel-human-reduce-bone-uv-lod0 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6283803637758779683, guid: b4c57d9735dd9449a895e73f17f4130c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8015330692060141335, guid: b4c57d9735dd9449a895e73f17f4130c, type: 3}
       propertyPath: _initializeOnAwake
       value: 1
@@ -953,7 +961,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!64 &863905101
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1375,6 +1383,137 @@ MonoBehaviour:
   _bakeLODSkinnedMeshes: []
   _lodDistanceStep: 10
   _dryRun: 0
+--- !u!1001 &1413860733
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_RootOrder
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+      propertyPath: m_Name
+      value: voxel-human-reduce-bone-uv-generics
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+--- !u!1 &1413860734 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+  m_PrefabInstance: {fileID: 1413860733}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1413860735
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413860734}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 89e3ad1ff3e9c4a36b400439ad79d34e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &1413860736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413860734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8dba03481a5142059f92ceda718850a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bakerComputeShader: {fileID: 7200000, guid: 8a0749b1c2364adda7c8d805aa37d97c, type: 3}
+  _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
+  _animationFps: 15
+  _bakeLODSkinnedMeshes: []
+  _lodDistanceStep: 10
+  _dryRun: 0
+--- !u!1 &1472657925
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1472657926}
+  m_Layer: 0
+  m_Name: ---------
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1472657926
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472657925}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.03344761, y: 1.0597284, z: 0.011620283}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1608143113
 GameObject:
   m_ObjectHideFlags: 0
@@ -1493,6 +1632,67 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!1001 &1714782753
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3640477734045171183, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_Name
+      value: voxel-human-reduce-bone-uv-generics (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3780936022746132004, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: _initializeOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_RootOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.849
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711281592115790277, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
 --- !u!1001 &1747318614
 PrefabInstance:
   m_ObjectHideFlags: 0

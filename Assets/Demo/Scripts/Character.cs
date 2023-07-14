@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GPUAnimationBaker;
 using TMPro;
 using UnityEngine;
@@ -49,6 +50,8 @@ namespace Demo
 
         public void Initialize(bool enabledPhysics)
         {
+            _gpuAnimationController.Initialize();
+            
             if (!enabledPhysics)
             {
                 Destroy(_rigidbody);
