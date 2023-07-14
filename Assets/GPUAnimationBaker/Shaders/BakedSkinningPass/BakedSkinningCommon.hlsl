@@ -110,6 +110,8 @@ float4x4 GetBakedSkinMatrix(
     float4 boneWeights
 )
 {
+    // TODO: ブレンドするボーンが1or2で出し分けたい. マクロなどで
+    
     /*
 
     // blend 2 bones
