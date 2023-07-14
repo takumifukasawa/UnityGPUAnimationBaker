@@ -777,7 +777,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bakerComputeShader: {fileID: 7200000, guid: 8a0749b1c2364adda7c8d805aa37d97c, type: 3}
   _runtimeShader: {fileID: 4800000, guid: cd11d25d3c02041278a179aec07412c1, type: 3}
-  _animationFps: 60
+  _animationFps: 15
   _bakeLODSkinnedMeshes:
   - {fileID: 5041838719852192022, guid: ace57aa8f6c1241f88eab25cc3395ada, type: 3}
   _lodDistanceStep: 10

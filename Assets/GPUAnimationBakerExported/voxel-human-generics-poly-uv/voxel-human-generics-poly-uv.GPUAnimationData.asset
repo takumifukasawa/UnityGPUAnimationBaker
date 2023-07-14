@@ -16,18 +16,18 @@ MonoBehaviour:
   - LODMesh: {fileID: 4300000, guid: 716ca62d6fd4f44b78d8f4d2551f4e21, type: 2}
     ThresholdDistance: 0
   - LODMesh: {fileID: 4300000, guid: 180da13f7dacc4deb9e67fdcc97b24ac, type: 2}
-    ThresholdDistance: 27.5
-  FPS: 60
+    ThresholdDistance: 10
+  FPS: 15
   TotalDuration: 0.8
-  TotalFrames: 48
-  TextureWidth: 32
-  TextureHeight: 32
+  TotalFrames: 12
+  TextureWidth: 16
+  TextureHeight: 16
   BoneCount: 7
   GPUAnimationFrames:
   - AnimationName: Run
-    Frames: 40
+    Frames: 10
   - AnimationName: Idle
-    Frames: 8
+    Frames: 2
   RuntimeMaterial: {fileID: 2100000, guid: e5dee09922d9d468d99f23dc79e3b972, type: 2}
   BakedBonesMap: {fileID: 2800000, guid: 37a08216fbf924023ac70a1df52c456d, type: 2}
   BoneOffsetMatrices:
