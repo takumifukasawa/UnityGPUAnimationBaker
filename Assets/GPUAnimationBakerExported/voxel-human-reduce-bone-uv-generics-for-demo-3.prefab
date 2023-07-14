@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6906564572871998578}
   - component: {fileID: 8113881098824753281}
   m_Layer: 0
-  m_Name: voxel-human-reduce-bone-uv-generics-for-demo-2
+  m_Name: voxel-human-reduce-bone-uv-generics-for-demo-3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91,13 +91,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577e3ac76d1a6bf4fb8289fd56cd609b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initializeOnAwake: 0
+  _initializeOnAwake: 1
   _instanceBaseColor: {r: 1, g: 1, b: 1, a: 1}
   _enabledLOD: 1
   _meshRenderer: {fileID: 0}
   _meshFilter: {fileID: 4297441773949933940}
   _gpuAnimationDataScriptableObject: {fileID: 11400000, guid: 3001198973a5348c391cf258d3effcf8, type: 2}
-  _currentGPUAnimationFrameIndex: 0
+  _currentGPUAnimationFrameIndex: 1
 --- !u!33 &4297441773949933940
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -151,8 +151,8 @@ MonoBehaviour:
   _gpuAnimationController: {fileID: 3780936022746132004}
   _rigidbody: {fileID: -6195147841398276778}
   _collider: {fileID: 6906564572871998578}
-  _moveMinSpeed: 4
-  _moveMaxSpeed: 7
+  _moveMinSpeed: 0
+  _moveMaxSpeed: 0
   _toggleStateMinInterval: 0.8
   _toggleStateMaxInterval: 1.5
   _movableMinArea: {x: -9.75, y: 0, z: -9.75}

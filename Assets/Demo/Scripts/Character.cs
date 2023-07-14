@@ -9,6 +9,9 @@ namespace Demo
     public class Character : MonoBehaviour
     {
         [SerializeField]
+        private bool _initializeOnAwake = false;
+        
+        [SerializeField]
         private GPUAnimationController _gpuAnimationController;
 
         [SerializeField]
@@ -48,6 +51,15 @@ namespace Demo
 
         private bool _isInitialized = false;
 
+        void Awake()
+        {
+            if (_initializeOnAwake)
+            {
+                // dummy
+                Initialize(false);
+            }
+        }
+        
         /// <summary>
         /// 
         /// </summary>
@@ -62,7 +74,7 @@ namespace Demo
                 _collider.isTrigger = true;
             }
 
-            UpdateInterval();
+            // UpdateInterval();
 
             if (Random.Range(0f, 1f) > 0.5f)
             {
@@ -154,6 +166,7 @@ namespace Demo
         {
             _isMoving = true;
             _gpuAnimationController.PlayAnimation("Run");
+            // _gpuAnimationController.PlayAnimation(1);
             _forward = new Vector3(
                 Random.Range(-1f, 1f),
                 0f,
@@ -166,6 +179,7 @@ namespace Demo
         {
             _isMoving = false;
             _gpuAnimationController.PlayAnimation("Idle");
+            // _gpuAnimationController.PlayAnimation(0);
         }
     }
 }

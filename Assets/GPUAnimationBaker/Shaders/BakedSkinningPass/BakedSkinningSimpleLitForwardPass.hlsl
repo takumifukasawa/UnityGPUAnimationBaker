@@ -224,7 +224,7 @@ Varyings LitPassVertexSimple(Attributes input)
     // CUSTOM_LINE_BEGIN
     // ----------------------------------------------------------------
 
-    // TODO: 4色のカラーパレットを使う場合、uvをoverride。基本的にはなくてよいので別シェーダーにする
+    // TODO: 4色のカラーパレットを使う場合の uv override。基本的にはなくてよいので別シェーダーにする
     // TODO: 分岐を回避したい(パレットが増えても大丈夫なようにしたい
     float4 instanceColorPalette = UNITY_ACCESS_INSTANCED_PROP(Props, _ColorPalette);
     // output.uv = input.texcoord.xy;

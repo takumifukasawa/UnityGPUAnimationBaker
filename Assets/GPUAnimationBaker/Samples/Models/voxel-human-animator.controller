@@ -20,7 +20,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -5911083761341660522, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+  m_Motion: {fileID: -5911083761341660522, guid: 90f5f9b8951cc42fba14f723cbabfed5, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -37,7 +37,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -2587615136552121033}
-    m_Position: {x: 40, y: 190, z: 0}
+    m_Position: {x: 30, y: 300, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5943295724589879195}
     m_Position: {x: 40, y: 240, z: 0}
@@ -50,14 +50,14 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: -2587615136552121033}
+  m_DefaultState: {fileID: 5943295724589879195}
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: New Animator Controller 1
+  m_Name: voxel-human-animator
   serializedVersion: 5
   m_AnimatorParameters: []
   m_AnimatorLayers:
@@ -93,7 +93,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -6539631105668239778, guid: 1399b1eda5ae54c329bcce09f6764e30, type: 3}
+  m_Motion: {fileID: -6539631105668239778, guid: 90f5f9b8951cc42fba14f723cbabfed5, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

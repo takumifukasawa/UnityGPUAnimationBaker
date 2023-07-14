@@ -45,7 +45,7 @@ namespace GPUAnimationBaker
         // unity engine
         // ----------------------------------------------------------------------------------
 
-        void Start()
+        void Awake()
         {
             if (_initializeOnAwake)
             {
@@ -112,13 +112,21 @@ namespace GPUAnimationBaker
             }
         }
 
+        private bool _isInitialized = false;
+
         /// <summary>
         /// 
         /// </summary>
         public void Initialize()
         {
+            if (_isInitialized)
+            {
+                return;
+            }
+
             if (_gpuAnimationDataScriptableObject == null)
             {
+                Debug.LogError("invalid data");
                 return;
             }
 
@@ -146,6 +154,7 @@ namespace GPUAnimationBaker
             }
 
             _isRuntime = true;
+            _isInitialized = true;
 
             // メッシュが1個しかないときはLODを強制的に無効
             if (_gpuAnimationDataScriptableObject.GPUAnimationMeshLODSettings.Count < 2)
@@ -153,7 +162,7 @@ namespace GPUAnimationBaker
                 _enabledLOD = false;
             }
 
-            UpdateFrameInfo(_gpuAnimationDataScriptableObject.GPUAnimationFrames[_currentGPUAnimationFrameIndex]);
+            // UpdateFrameInfo(_gpuAnimationDataScriptableObject.GPUAnimationFrames[_currentGPUAnimationFrameIndex]);
             PlayAnimation(_currentGPUAnimationFrameIndex);
         }
 
@@ -173,6 +182,9 @@ namespace GPUAnimationBaker
                 ));
                 return;
             }
+
+            // for debug
+            // Debug.Log($"[GPUAnimationController] PlayAnimation - name: {targetFrame.AnimationName}, frames: {targetFrame.Frames}");
 
             UpdateFrameInfo(targetFrame);
         }
@@ -270,13 +282,16 @@ namespace GPUAnimationBaker
 
         private bool _isRuntime = false;
 
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="frameInfo"></param>
         void UpdateFrameInfo(GPUAnimationFrame frameInfo)
         {
+            _currentGPUAnimationFrameIndex = _gpuAnimationDataScriptableObject.GPUAnimationFrames.FindIndex((e) => e == frameInfo);
+            // for debug
+            // Debug.Log("update frame info: " + _currentGPUAnimationFrameIndex);
+
             _currentGPUAnimationFrameInfo = frameInfo;
             _currentGPUAnimationInitialFrame = 0;
             if (_currentGPUAnimationFrameIndex != 0)

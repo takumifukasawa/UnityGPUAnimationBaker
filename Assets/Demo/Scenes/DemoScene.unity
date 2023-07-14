@@ -2064,6 +2064,83 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1586150844}
   m_CullTransparentMesh: 1
+--- !u!1001 &1602090465
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 101583812349602152, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 801017024292777183, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: _initializeOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 801017024292777183, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: _currentGPUAnimationFrameIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3262939687159533997, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_Name
+      value: voxel-human-generics-poly-uv-demo
+      objectReference: {fileID: 0}
+    - target: {fileID: 3262939687159533997, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3827523437855563019, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3827523437855563019, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+      propertyPath: _initializeOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
 --- !u!1 &1608143113
 GameObject:
   m_ObjectHideFlags: 0
@@ -2353,8 +2430,8 @@ MonoBehaviour:
   _physicsToggle: {fileID: 1322465850}
   _contactToggle: {fileID: 734936631}
   _respawnButton: {fileID: 111037634}
-  _characterPrefab: {fileID: 8113881098824753281, guid: 7e6ccb90b8ac742f189267887e91ae0a, type: 3}
-  _initalSpawnNum: 1
+  _characterPrefab: {fileID: 3827523437855563019, guid: 70561dd73a70944e38671e282b4f0df9, type: 3}
+  _initalSpawnNum: 10
   _spawnMinPosition: {x: -10, y: 0, z: -10}
   _spawnMaxPosition: {x: 10, y: 0, z: 10}
   _spawnMinScale: 0.4
